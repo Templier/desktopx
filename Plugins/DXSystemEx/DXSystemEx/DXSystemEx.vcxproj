@@ -204,12 +204,14 @@
   <ItemGroup>
     <CustomBuild Include="Config.tpl">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SubWCRev.exe $(ProjectDir) "$(ProjectDir)/Config.tpl" "$(ProjectDir)/Config.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Config.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SubWCRev.exe $(ProjectDir) "$(ProjectDir)/Config.tpl" "$(ProjectDir)/Config.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Config.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
     </CustomBuild>
     <None Include="..\Docs\Config.bmp" />
     <None Include="DXSystemEx.def" />
@@ -225,5 +227,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\SDK\revision.targets" />
   </ImportGroup>
 </Project>

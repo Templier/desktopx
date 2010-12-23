@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<Revision>0</Revision>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildExtensionsPath)\MSBuild.Mercurial\MSBuild.Mercurial.Tasks" />
+	<Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+	<Target Name="Hg-Revision" BeforeTargets="ClCompile">
+		<HgVersion LocalPath="$(MSBuildProjectDirectory)" Timeout="5000">
+			<Output TaskParameter="Revision" PropertyName="Revision" />
+		</HgVersion>
+
+		<Message Text="Last revision from HG: $(Revision)"/>
+
+		<CreateItem Include="Revision" AdditionalMetadata="ReplacementValue=$(Revision)">
+			<Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/>
+		</CreateItem>
+
+		<TemplateFile Template="Config.tpl"
+					  OutputFileName="Config.h"
+					  Tokens="@(AssemblyInfoTokens)" />
+	</Target>
+</Project>
