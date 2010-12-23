@@ -137,7 +137,7 @@ END_CONNECTION_POINT_MAP()
 		// Zip
 		CArchive* m_pZipUtility;
 
-		// Misc		
+		// Misc
 		static bool hasEnding(wstring const &fullString, wstring const &ending);
 
 		//////////////////////////////////////////////////////////////////////////
@@ -200,7 +200,8 @@ END_CONNECTION_POINT_MAP()
 		/************************************************************************/
 		/* Download                                                             */
 		/************************************************************************/
-		STDMETHOD(StartDownload)(int id, BSTR remoteUrl, BSTR localPath);
+		STDMETHOD(Download)(BSTR remoteUrl, BSTR localPath, int* id);
+		STDMETHOD(LoadPage)(BSTR remoteUrl, BSTR parameters, int* id);
 		STDMETHOD(StopDownload)(int id);
 
 		/************************************************************************/

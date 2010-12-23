@@ -48,7 +48,7 @@ using namespace std;
 class FileDownloader
 {
 public:
-	enum DownloadStatus {
+	enum ConnectionStatus {
 		DownloadOk = 0,
 		DownloadCancelled,
 
@@ -85,6 +85,7 @@ public:
 		int			id;
 		string		remoteUrl;
 		string		localPath;
+		bool        isDownload;
 
 		// Progress
 		DWORD		completedSize;   // Size of the completed data
@@ -97,15 +98,17 @@ public:
 							id(0),
 							remoteUrl(""),
 							localPath(""),
+							isDownload(true),
 							completedSize(0),
 							totalSize(0),
 							receivedSize(0),
 							buffer(NULL)
-		{
-		}
+		{}
 	};
 
 private:
+	int m_sessionCounter;
+
 	// Session handle
 	HINTERNET m_hSession;
 
@@ -120,8 +123,8 @@ public:
 	~FileDownloader();
 
 	bool IsValid(int id);
-	DownloadStatus IsPathValid(string path);
-	void Download(int id, string remoteUrl, string localPath);
+	ConnectionStatus IsPathValid(string path);
+	int Download(string remoteUrl, string localPath, bool isDownload);
 	void StopDownload(int id);
 
 	void Cleanup();
@@ -134,9 +137,9 @@ public:
 
 	void OnHandleClosing(REQUEST_CONTEXT* context);
 	void CloseConnection(REQUEST_CONTEXT* context);
-	DownloadStatus SaveFile(REQUEST_CONTEXT* context);
+	ConnectionStatus SaveFile(REQUEST_CONTEXT* context);
 
 	// DX callbacks
-	void CompletionCallback(REQUEST_CONTEXT* context, DownloadStatus status);
+	void CompletionCallback(REQUEST_CONTEXT* context, ConnectionStatus status);
 	void ProgressCallback(REQUEST_CONTEXT* context);
 };

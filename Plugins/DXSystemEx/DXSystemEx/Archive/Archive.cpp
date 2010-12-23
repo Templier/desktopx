@@ -41,10 +41,10 @@
 #include <atlpath.h>
 #include <shlobj.h>
 
-extern HINSTANCE g_hInstance;	
+extern HINSTANCE g_hInstance;
 extern BOOL (__stdcall *SDHostMessage)(UINT, DWORD, DWORD);
 
-void CArchive::clear() 
+void CArchive::clear()
 {
 	m_filename = "";
 	m_path = "";
@@ -63,12 +63,12 @@ void CArchive::clear()
 
 void CArchive::parseInputFilename(BSTR file)
 {
-	_bstr_t bstrStart(file); 
+	_bstr_t bstrStart(file);
 	CString s;
 	s.Format(_T("%s"), (LPCTSTR)bstrStart);
 
 	CPath filename(s);
-	filename.StripPath();	
+	filename.StripPath();
 
 	CPath path(s);
 	path.RemoveFileSpec();
@@ -221,15 +221,15 @@ STDMETHODIMP CArchive::get_Type(int* type)
 	return S_OK;
 }
 
-STDMETHODIMP CArchive::get_SupportedExtensions(VARIANT* extensions) 
-{	
+STDMETHODIMP CArchive::get_SupportedExtensions(VARIANT* extensions)
+{
 	// Compute extensions
 	vector<string> exts;
 
 	if (m_h7zip) {
 
 	} else {
-#if ENABLE_ZIP_FALLBACK	
+#if ENABLE_ZIP_FALLBACK
 		exts.push_back("zip");
 #endif
 	}
@@ -256,10 +256,10 @@ STDMETHODIMP CArchive::get_SupportedExtensions(VARIANT* extensions)
 				SafeArrayDestroy(pSA); // does a deep destroy
 				return hr;
 			}
-		}	
+		}
 
 	}
-	
+
 	// return SafeArray as VARIANT
 	V_VT(extensions) = VT_ARRAY | VT_VARIANT;
 	V_ARRAY(extensions)= pSA;
@@ -282,9 +282,9 @@ STDMETHODIMP CArchive::Create(BSTR filePath, int type, VARIANT_BOOL* status)
 	//	return S_OK;
 	//}
 
-#if ENABLE_ZIP_FALLBACK	
+#if ENABLE_ZIP_FALLBACK
 	if (type != kArchiveZip)
-		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path only supports ZIP archives", 0, NULL);		
+		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path only supports ZIP archives", 0, NULL);
 
 	m_hZip = CreateZip(W2A(filePath), 0, ZIP_FILENAME, LPCTSTR(m_password));
 	if (!m_hZip) {
@@ -299,23 +299,23 @@ STDMETHODIMP CArchive::Create(BSTR filePath, int type, VARIANT_BOOL* status)
 	*status = VARIANT_TRUE;
 
 	return S_OK;
-#else 
-	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);	
+#else
+	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);
 #endif
 }
 
-STDMETHODIMP CArchive::Open(BSTR filePath, VARIANT_BOOL* status) 
+STDMETHODIMP CArchive::Open(BSTR filePath, VARIANT_BOOL* status)
 {
 	USES_CONVERSION;
-	
+
 	// Close previously opened/created file, if any
-	clear();	
+	clear();
 
 	//if (m_h7zip) {
 	//	return S_OK;
 	//}
 
-#if ENABLE_ZIP_FALLBACK	
+#if ENABLE_ZIP_FALLBACK
 	ZIPENTRY zipEntry;
 	ZIPENTRY zipItem;
 
@@ -337,15 +337,15 @@ STDMETHODIMP CArchive::Open(BSTR filePath, VARIANT_BOOL* status)
 
 		GetZipItem(m_hZip, i, &zipItem);
 		archiveItem.filename = zipItem.name;
-		archiveItem.isDirectory = (bool)(zipItem.attr & FILE_ATTRIBUTE_DIRECTORY);
+		archiveItem.isDirectory = (zipItem.attr & FILE_ATTRIBUTE_DIRECTORY) != 0;
 		archiveItem.compressedSize = zipItem.comp_size;
 		m_files.push_back(archiveItem);
 	}
-	
+
 	*status = VARIANT_TRUE;
 	return S_OK;
-#else 
-	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);	
+#else
+	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);
 #endif
 }
 
@@ -390,8 +390,8 @@ STDMETHODIMP CArchive::AddFile(BSTR fileName, VARIANT_BOOL* status)
 	}
 
 	return S_OK;
-#else 
-	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);	
+#else
+	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);
 #endif
 }
 
@@ -426,13 +426,13 @@ STDMETHODIMP CArchive::ExtractFile(BSTR filename, BSTR outputPath, VARIANT_BOOL*
 	}
 
 	return S_OK;
-#else 
-	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);	
+#else
+	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);
 #endif
 }
 
 STDMETHODIMP CArchive::Extract(BSTR outputDirectory, VARIANT_BOOL* status)
-{	
+{
 	USES_CONVERSION;
 	_bstr_t outputFile;
 	_bstr_t outputPath = outputDirectory;
@@ -461,8 +461,8 @@ STDMETHODIMP CArchive::Extract(BSTR outputDirectory, VARIANT_BOOL* status)
 
 	*status = VARIANT_TRUE;
 	return S_OK;
-#else 
-	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);	
+#else
+	return CCOMError::DispatchError(SYNTAX_ERR, CLSID_Archive, _T("Error: Not available"), "The plugin cannot find the 7zip dll and the zip fallback path was not compiled in!", 0, NULL);
 #endif
 }
 
@@ -478,7 +478,7 @@ STDMETHODIMP CArchive::IsArchive(BSTR filename, VARIANT_BOOL* status)
 {
 	*status = VARIANT_FALSE;
 
-	_bstr_t file(filename); 
+	_bstr_t file(filename);
 	CString s;
 	s.Format(_T("%s"), (LPCTSTR)file);
 

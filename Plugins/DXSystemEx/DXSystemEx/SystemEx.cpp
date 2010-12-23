@@ -295,7 +295,7 @@ STDMETHODIMP CSystemEx::InterfaceSupportsErrorInfo(REFIID riid)
 /************************************************************************/
 /* HTTP Download                                                        */
 /************************************************************************/
-STDMETHODIMP CSystemEx::StartDownload(int id, BSTR remoteUrl, BSTR localPath)
+STDMETHODIMP CSystemEx::Download(BSTR remoteUrl, BSTR localPath, int* id)
 {
 	// Check input
 	if (CComBSTR(remoteUrl) == CComBSTR(""))
@@ -307,12 +307,26 @@ STDMETHODIMP CSystemEx::StartDownload(int id, BSTR remoteUrl, BSTR localPath)
 	if (m_pFileDownloader == NULL)
 		m_pFileDownloader = new FileDownloader(m_objID);
 
-	USES_CONVERSION;
-	if (!m_pFileDownloader->IsValid(id))
-		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("ID already exists"), "A download is already in progress with this ID", 0, NULL);
 
 	// Add to the list of file to download
-	m_pFileDownloader->Download(id, OLE2A(remoteUrl), OLE2A(localPath));
+	USES_CONVERSION;
+	*id = m_pFileDownloader->Download(OLE2A(remoteUrl), OLE2A(localPath), true);
+
+	return S_OK;
+}
+
+STDMETHODIMP CSystemEx::LoadPage(BSTR remoteUrl, BSTR parameters, int* id)
+{
+	// Check input
+	if (CComBSTR(remoteUrl) == CComBSTR(""))
+		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("Invalid remote url"), "Remote url is empty!", 0, NULL);
+
+	if (m_pFileDownloader == NULL)
+		m_pFileDownloader = new FileDownloader(m_objID);
+
+	// Add to the list of file to download
+	USES_CONVERSION;
+	*id = m_pFileDownloader->Download(OLE2A(remoteUrl), OLE2A(parameters), false);
 
 	return S_OK;
 }
@@ -328,7 +342,7 @@ STDMETHODIMP CSystemEx::StopDownload(int id)
 /************************************************************************/
 /* Signature                                                            */
 /************************************************************************/
-STDMETHODIMP CSystemEx::GetSignature(BSTR path, int type, BSTR* signature) 
+STDMETHODIMP CSystemEx::GetSignature(BSTR path, int type, BSTR* signature)
 {
 	// Check input
 	if (CComBSTR(path) == CComBSTR(""))
@@ -415,7 +429,7 @@ STDMETHODIMP CSystemEx::GetSignature(BSTR path, int type, BSTR* signature)
 		hashValue += ch;
 	}
 
-	*signature = SysAllocString((OLECHAR*) T2OLE(hashValue.c_str()));	
+	*signature = SysAllocString((OLECHAR*) T2OLE(hashValue.c_str()));
 
 	// Cleanup
 	free(pbHash);

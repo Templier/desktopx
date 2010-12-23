@@ -46,6 +46,7 @@ extern BOOL (__stdcall *SDHostMessage)(UINT, DWORD, DWORD);
 
 FileDownloader::FileDownloader(DWORD objID) : m_objID(objID),
 											  m_hSession(NULL),
+											  m_sessionCounter(0),
 											  m_fClosing(FALSE)
 {
 	pFileDownloader = this;
@@ -120,8 +121,9 @@ void FileDownloader::OnHandleClosing(REQUEST_CONTEXT* context)
 // DesktopX Callbacks
 //////////////////////////////////////////////////////////////////////////
 
-// SystemEx_OnDownloadFinish(id, status, http_code, path)
-void FileDownloader::CompletionCallback(REQUEST_CONTEXT* context, DownloadStatus status)
+// SystemEx_OnDownloadFinish(id, status, path)
+// SystemEx_OnLoadPageFinish(id, status, data)
+void FileDownloader::CompletionCallback(REQUEST_CONTEXT* context, ConnectionStatus status)
 {
 	if (m_fClosing)
 		return;
@@ -129,7 +131,7 @@ void FileDownloader::CompletionCallback(REQUEST_CONTEXT* context, DownloadStatus
 	SD_SCRIPTABLE_EVENT se;
 	se.cbSize = sizeof(SD_SCRIPTABLE_EVENT);
 	se.flags = 0;
-	lstrcpy(se.szEventName, PLUGIN_PREFIX "OnDownloadFinish");
+	lstrcpy(se.szEventName, context->isDownload ? PLUGIN_PREFIX "OnDownloadFinish" : PLUGIN_PREFIX "OnLoadPageFinish");
 
 	// Message parameters
 	memset(&se.dp, 0, sizeof(DISPPARAMS));
@@ -145,9 +147,15 @@ void FileDownloader::CompletionCallback(REQUEST_CONTEXT* context, DownloadStatus
 	lpvt[1].vt = VT_I4;
 	lpvt[1].lVal = (int)status;
 
-	CComBSTR bstr(context->localPath.c_str());
-	lpvt[0].vt = VT_BSTR;
-	lpvt[0].bstrVal = bstr.Detach();
+	if (context->isDownload) {
+		CComBSTR bstr(context->localPath.c_str());
+		lpvt[0].vt = VT_BSTR;
+		lpvt[0].bstrVal = bstr.Detach();
+	} else {
+		CComBSTR bstr(context->buffer);
+		lpvt[0].vt = VT_BSTR;
+		lpvt[0].bstrVal = bstr.Detach();
+	}
 
 	se.dp.rgvarg = lpvt;
 
@@ -157,6 +165,7 @@ void FileDownloader::CompletionCallback(REQUEST_CONTEXT* context, DownloadStatus
 }
 
 // SystemEx_OnDownloadProgress(id, completed, total)
+// SystemEx_OnLoadPageProgress(id, completed, total)
 void FileDownloader::ProgressCallback(REQUEST_CONTEXT* context)
 {
 	if (m_fClosing)
@@ -165,7 +174,7 @@ void FileDownloader::ProgressCallback(REQUEST_CONTEXT* context)
 	SD_SCRIPTABLE_EVENT se;
 	se.cbSize = sizeof(SD_SCRIPTABLE_EVENT);
 	se.flags = 0;
-	lstrcpy(se.szEventName, PLUGIN_PREFIX "OnDownloadProgress");
+	lstrcpy(se.szEventName, context->isDownload ? PLUGIN_PREFIX "OnDownloadProgress" : PLUGIN_PREFIX "OnLoadPageProgress");
 
 	// Message parameters
 	memset(&se.dp, 0, sizeof(DISPPARAMS));
@@ -200,7 +209,7 @@ void FileDownloader::CloseConnection(REQUEST_CONTEXT* context)
 	if (context == NULL)
 		return;
 
-	if (context->hRequest) {		
+	if (context->hRequest) {
 		context->hRequest = NULL;
 		WinHttpCloseHandle(context->hRequest);
 	}
@@ -222,15 +231,19 @@ void FileDownloader::CloseConnection(REQUEST_CONTEXT* context)
 //////////////////////////////////////////////////////////////////////////
 // Download
 //////////////////////////////////////////////////////////////////////////
-void FileDownloader::Download(int id, string remoteUrl, string localPath)
+int FileDownloader::Download(string remoteUrl, string localPath, bool isDownload)
 {
 	// Initialize context
 	REQUEST_CONTEXT* context = new REQUEST_CONTEXT();
-	context->id = id;
+	context->id = m_sessionCounter;
 	context->remoteUrl = remoteUrl;
 	context->localPath = localPath;
+	context->isDownload = isDownload;
 
-	m_requests[id] = context;
+	m_requests[m_sessionCounter] = context;
+
+	// Increment session counter
+	++m_sessionCounter;
 
 	// check that the downloading session is opened correctly
 	if (!m_hSession) {
@@ -239,11 +252,16 @@ void FileDownloader::Download(int id, string remoteUrl, string localPath)
 	}
 
 	// Check path for validity
-	DownloadStatus pathStatus = IsPathValid(localPath);
-	if (pathStatus != DownloadOk)
+	if (isDownload)
 	{
-		CompletionCallback(context, pathStatus);
-		goto error_exit;
+		ConnectionStatus pathStatus = IsPathValid(localPath);
+		if (pathStatus != DownloadOk)
+		{
+			CompletionCallback(context, pathStatus);
+			goto error_exit;
+		}
+	} else {
+		// Setup buffer for posted data
 	}
 
 	// Check the url
@@ -278,7 +296,7 @@ void FileDownloader::Download(int id, string remoteUrl, string localPath)
 
 	// Open the request
 	context->hRequest = WinHttpOpenRequest(context->hConnect,
-										   L"GET",
+										   (!isDownload && !localPath.empty()) ? L"POST" : L"GET",
 									       UrlComponents.lpszUrlPath,
 									       L"HTTP/1.1",
 										   WINHTTP_NO_REFERER,
@@ -300,16 +318,24 @@ void FileDownloader::Download(int id, string remoteUrl, string localPath)
 
 
 	// Send a request
-	if (WinHttpSendRequest(context->hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, (DWORD_PTR)context) == FALSE)
+	if (WinHttpSendRequest(context->hRequest,
+						   WINHTTP_NO_ADDITIONAL_HEADERS,
+						   0,
+						   WINHTTP_NO_REQUEST_DATA,
+						   0,
+						   0,
+						   (DWORD_PTR)context) == FALSE)
 	{
 		CompletionCallback(context, RequestSendFailed);
 		goto error_exit;
 	}
 
-	return;
+	return context->id;
 
 error_exit:
 	CloseConnection(context);
+
+	return context->id;
 }
 
 void FileDownloader::StopDownload(int id)
@@ -318,9 +344,8 @@ void FileDownloader::StopDownload(int id)
 	bool isDownloadPresent = !(it == m_requests.end());
 
 	// If the download does not exist, do not do anything
-	if (!isDownloadPresent) {
+	if (!isDownloadPresent)
 		return;
-	}
 
 	REQUEST_CONTEXT* context = (*it).second;
 	CompletionCallback(context, DownloadCancelled);
@@ -356,7 +381,7 @@ void CALLBACK DownloadStatusCallback(HINTERNET,
 			if(WinHttpReceiveResponse(context->hRequest, NULL ) == FALSE)
 			{
 				int error = GetLastError();
-				FileDownloader::DownloadStatus status = FileDownloader::InternalError;
+				FileDownloader::ConnectionStatus status = FileDownloader::InternalError;
 
 				switch(error)
 				{
@@ -439,7 +464,7 @@ void CALLBACK DownloadStatusCallback(HINTERNET,
 			if (WinHttpQueryDataAvailable(context->hRequest, NULL) == FALSE)
 			{
 				int error = GetLastError();
-				FileDownloader::DownloadStatus status = FileDownloader::InternalError;
+				FileDownloader::ConnectionStatus status = FileDownloader::InternalError;
 
 				switch(error)
 				{
@@ -472,7 +497,7 @@ void CALLBACK DownloadStatusCallback(HINTERNET,
 			if (context->receivedSize == 0)
 			{
 				pFileDownloader->ProgressCallback(context);
-				FileDownloader::DownloadStatus saveStatus = pFileDownloader->SaveFile(context);
+				FileDownloader::ConnectionStatus saveStatus = pFileDownloader->SaveFile(context);
 				pFileDownloader->CompletionCallback(context, saveStatus);
 				pFileDownloader->CloseConnection(context);
 			}
@@ -485,7 +510,7 @@ void CALLBACK DownloadStatusCallback(HINTERNET,
 				if(WinHttpReadData(context->hRequest, (LPVOID)lpOutBuffer, context->receivedSize, NULL ) == FALSE)
 				{
 					int error = GetLastError();
-					FileDownloader::DownloadStatus status = FileDownloader::InternalError;
+					FileDownloader::ConnectionStatus status = FileDownloader::InternalError;
 
 					switch(error)
 					{
@@ -555,7 +580,7 @@ void CALLBACK DownloadStatusCallback(HINTERNET,
 			if (WinHttpQueryDataAvailable(context->hRequest, NULL) == FALSE)
 			{
 				int error = GetLastError();
-				FileDownloader::DownloadStatus status = FileDownloader::InternalError;
+				FileDownloader::ConnectionStatus status = FileDownloader::InternalError;
 
 				switch(error)
 				{
@@ -594,13 +619,14 @@ void CALLBACK DownloadStatusCallback(HINTERNET,
 //////////////////////////////////////////////////////////////////////////
 bool FileDownloader::IsValid(int id)
 {
-	bool isDownloadPresent = (m_requests.find(id) == m_requests.end());
-
-	return (isDownloadPresent);
+	return (m_requests.find(id) == m_requests.end());
 }
 
-FileDownloader::DownloadStatus FileDownloader::IsPathValid(string path)
+FileDownloader::ConnectionStatus FileDownloader::IsPathValid(string path)
 {
+	if (path.empty())
+		return InvalidPath;
+
 	// Path length
 	if (path.length() > MAX_PATH)
 		return InvalidPath;
@@ -634,9 +660,13 @@ FileDownloader::DownloadStatus FileDownloader::IsPathValid(string path)
 	return DownloadOk;
 }
 
-FileDownloader::DownloadStatus FileDownloader::SaveFile(REQUEST_CONTEXT* context)
+FileDownloader::ConnectionStatus FileDownloader::SaveFile(REQUEST_CONTEXT* context)
 {
-	DownloadStatus pathStatus = IsPathValid(context->localPath);
+	// When loading a page, do not try to save the file to disk
+	if (!context->isDownload)
+		return DownloadOk;
+
+	ConnectionStatus pathStatus = IsPathValid(context->localPath);
 	if (pathStatus != DownloadOk)
 		return pathStatus;
 
