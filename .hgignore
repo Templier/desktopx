@@ -1,0 +1,12 @@
+syntax: glob
+Plugins/DXCanvas/Widget/Canvas Controller/*
+Plugins/DXSystemEx/Widget/SystemEx/*
+Plugins/DockletX/Docs/Docklets/*
+Plugins/DXTaskbar7/Widget/Taskbar7Sample/*
+Plugins/DXSystemEx/DXSystemEx/DXSystemEx_p.c
+Plugins/DXSystemEx/DXSystemEx/DXSystemEx_i.c
+Plugins/DXSystemEx/DXSystemEx/Config.h
+Plugins/DXSystemEx/DXSystemEx/DXSystemEx.h
+Plugins/DXSystemEx/DXSystemEx/dlldata.c
+Docs/DesktopX Script Manual/settings.xml
+Plugins/DXTaskbar7/Widget/DXTaskbar7.zip
