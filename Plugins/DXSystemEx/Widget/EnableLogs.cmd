@@ -1,0 +1,2 @@
+@echo off
+netsh winhttp set tracing output=file trace-file-prefix="D:\Sources\Company\threeoaks\trunk\DesktopX\Plugins\DXSystemEx\Widget\Logs\DXSystemEx" level=verbose format=ansi state=enabled max-trace-file-size=1073741824
