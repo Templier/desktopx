@@ -342,15 +342,22 @@ STDMETHODIMP CSystemEx::StopDownload(int id)
 /************************************************************************/
 /* Signature                                                            */
 /************************************************************************/
-STDMETHODIMP CSystemEx::GetSignature(BSTR path, int type, BSTR* signature)
+STDMETHODIMP CSystemEx::GetHash(BSTR path, int type, BSTR* signature)
 {
 	// Check input
 	if (CComBSTR(path) == CComBSTR(""))
 		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("Invalid file path"), "File path is empty!", 0, NULL);
 
 	// Only allow SHA1 signature type at this moment
-	if (type != 0)
+	ALG_ID algId = CALG_SHA1;
+	switch (type) {
+	default:
 		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("Invalid signature type"), "Signature type is invalid!", 0, NULL);
+
+	case 0:
+		algId = CALG_SHA1;
+		break;
+	}
 
 	USES_CONVERSION;
 
@@ -386,7 +393,7 @@ STDMETHODIMP CSystemEx::GetSignature(BSTR path, int type, BSTR* signature)
 		goto INTERNAL_ERROR;
 
 	// Create hash
-	if(!CryptCreateHash(hProv, CALG_SHA1, 0, 0, &hHash))
+	if(!CryptCreateHash(hProv, algId, 0, 0, &hHash))
 		goto INTERNAL_ERROR;
 
 	// Loop through file and hash file contents
@@ -450,15 +457,15 @@ INTERNAL_ERROR:
 	if (pbHash != NULL)
 		free(pbHash);
 
-	return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Internal error"), "Internal error while checking signature.", 0, NULL);
+	return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Internal error"), "Internal error while checking has.", 0, NULL);
 }
 
 
-STDMETHODIMP CSystemEx::VerifySignature(BSTR path, BSTR signature, int type, VARIANT_BOOL* isValid)
+STDMETHODIMP CSystemEx::VerifyHash(BSTR path, BSTR signature, int type, VARIANT_BOOL* isValid)
 {
 	USES_CONVERSION;
 	BSTR sig;
-	HRESULT hr = GetSignature(path, type, &sig);
+	HRESULT hr = GetHash(path, type, &sig);
 
 	if (hr != S_OK)
 		goto cleanup;
@@ -472,6 +479,98 @@ STDMETHODIMP CSystemEx::VerifySignature(BSTR path, BSTR signature, int type, VAR
 cleanup:
 	SysFreeString(sig);
 	return hr;
+}
+
+STDMETHODIMP CSystemEx::VerifySignature(BSTR data, BSTR signature, BSTR key, int type, VARIANT_BOOL* isValid) {
+	// Check input
+	if (CComBSTR(data) == CComBSTR(""))
+		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("No data has been provided."), "No data provided!", 0, NULL);
+
+	if (CComBSTR(signature) == CComBSTR(""))
+		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("No signature has been provided."), "No signature provided!", 0, NULL);
+
+	if (CComBSTR(key) == CComBSTR(""))
+		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("No key has been provided."), "No key provided!", 0, NULL);
+
+	// Only allow SHA1 hash type at this moment
+	ALG_ID algId = CALG_SHA1;
+	switch (type) {
+	default:
+		return CCOMError::DispatchError(SYNTAX_ERR, CLSID_SystemEx, _T("Invalid signature type"), "Signature type is invalid!", 0, NULL);
+
+	case 0:
+		algId = CALG_SHA1;
+		break;
+	}
+
+	USES_CONVERSION;
+
+	HCRYPTPROV hProv = NULL;
+	HCRYPTKEY  hKey = 0;
+	HCRYPTHASH hHash = NULL;
+
+	// Read the public key
+	char       pemPubKey[2048];
+	char       derPubKey[2048];
+	size_t     derPubKeyLen = 2048;
+	CERT_PUBLIC_KEY_INFO *publicKeyInfo = NULL;
+	int        publicKeyInfoLen;
+
+	// Convert from PEM format to DER format - removes header and footer and decodes from base64
+	if (!CryptStringToBinary(pemPubKey, 0, CRYPT_STRING_BASE64HEADER, (BYTE*)derPubKey, (DWORD*)&derPubKeyLen, NULL, NULL))
+		return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Invalid public key"), "Public key is invalid!", 0, NULL);
+
+	// Decode from DER format to CERT_PUBLIC_KEY_INFO
+	if (!CryptDecodeObjectEx(X509_ASN_ENCODING, X509_PUBLIC_KEY_INFO, (BYTE*)derPubKey, derPubKeyLen, CRYPT_ENCODE_ALLOC_FLAG, NULL, &publicKeyInfo, (DWORD*)&publicKeyInfoLen))
+		return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Invalid public key decoding"), "Public key is invalid!", 0, NULL);
+
+	// Get CryptoAPI context
+	if (!CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+		goto INTERNAL_ERROR;
+
+	// Import the public key
+	if (!CryptImportPublicKeyInfo(hProv, X509_ASN_ENCODING, publicKeyInfo, &hKey))
+		return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Invalid public key import"), "Public key is invalid!", 0, NULL);
+
+	// Cleanup public key data
+	LocalFree(publicKeyInfo);
+	publicKeyInfo = NULL;
+
+	// Create hash
+	if(!CryptCreateHash(hProv, algId, 0, 0, &hHash))
+		goto INTERNAL_ERROR;
+
+	// Calculate hash value of data
+	if (!CryptHashData(hHash, (BYTE*)data, SysStringByteLen(data), 0))
+		goto INTERNAL_ERROR;
+
+	// Verify signature
+	if (!CryptVerifySignature(hHash, (BYTE*)signature, SysStringByteLen(signature), hKey, NULL, 0)) {
+		if (GetLastError() == (DWORD)NTE_BAD_SIGNATURE) {
+			*isValid = VARIANT_FALSE;
+		} else {
+			return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Internal error"), "Internal error while checking signature.", 0, NULL);
+		}
+	} else {
+		*isValid = VARIANT_TRUE;
+	}
+
+	// Cleanup
+	CryptDestroyHash(hHash);
+	CryptReleaseContext(hProv, 0);
+
+	return S_OK;
+
+INTERNAL_ERROR:
+	// Clean up
+	if (hHash)
+		CryptDestroyHash(hHash);
+	if (hProv)
+		CryptReleaseContext(hProv, 0);
+	if (publicKeyInfo)
+		LocalFree(publicKeyInfo);
+
+	return CCOMError::DispatchError(INTERNAL_ERR, CLSID_SystemEx, _T("Internal error"), "Internal error while checking signature.", 0, NULL);
 }
 
 /************************************************************************/

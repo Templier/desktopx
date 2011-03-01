@@ -125,8 +125,9 @@ interface ISystemEx : IDispatch{
 	[id(11), helpstring("Get the specific monitor info identified by index")] HRESULT GetMonitor([in] int index, [out, retval] IMonitorInfo** info);
 
 	// Signature
-	[helpstring("Get the file signature")] HRESULT GetSignature([in] BSTR path, [in] int type, [out, retval] BSTR* signature);
-	[helpstring("Verify the file signature")] HRESULT VerifySignature([in] BSTR path, [in] BSTR signature, [in] int type, [out, retval] VARIANT_BOOL* isValid);
+	[helpstring("Get the file hash")] HRESULT GetHash([in] BSTR path, [in] int type, [out, retval] BSTR* hash);
+	[helpstring("Verify the file hash")] HRESULT VerifyHash([in] BSTR path, [in] BSTR hash, [in] int type, [out, retval] VARIANT_BOOL* isValid);
+	[helpstring("Verify a signature")] HRESULT VerifySignature([in] BSTR data, [in] BSTR signature, [in] BSTR key, [in] int type, [out, retval] VARIANT_BOOL* isValid);
 
 	// Download
 	[helpstring("Download a file with progress information")] HRESULT Download([in] BSTR remoteUrl, [in] BSTR localPath, [out, retval] int *id);

@@ -207,8 +207,9 @@ END_CONNECTION_POINT_MAP()
 		/************************************************************************/
 		/* Signature                                                            */
 		/************************************************************************/
-		STDMETHOD(GetSignature)(BSTR path, int type, BSTR* signature);
-		STDMETHOD(VerifySignature)(BSTR path, BSTR signature, int type, VARIANT_BOOL* isValid);
+		STDMETHOD(GetHash)(BSTR path, int type, BSTR* hash);
+		STDMETHOD(VerifyHash)(BSTR path, BSTR hash, int type, VARIANT_BOOL* isValid);
+		STDMETHOD(VerifySignature)(BSTR data, BSTR signature, BSTR key, int type, VARIANT_BOOL* isValid);
 
 		/************************************************************************/
 		/* Command line and single instance                                     */
