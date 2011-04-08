@@ -87,7 +87,6 @@ public:
 		m_parentHwnd = NULL;
 
 		m_isTabRegistered = false;
-		m_isAppIdSet = false;
 		m_isWindows7 = false;
 
 		// Check that we are running on Windows 7
@@ -173,7 +172,7 @@ END_COM_MAP()
 
 		bool m_isWindows7;
 		bool m_isTabRegistered;
-		bool m_isAppIdSet;
+		wstring m_appID;
 
 		// The list of thumbbar buttons to add
 		vector<ThumbButton> m_buttons;
@@ -240,6 +239,7 @@ END_COM_MAP()
 
 		STDMETHOD(CommitList)();
 		STDMETHOD(AbortList)();
+		STDMETHOD(SetAppID)(BSTR appID);
 		STDMETHOD(AddUserTask)(BSTR name, BSTR path, BSTR arguments, BSTR icon, int iconIndex, BSTR workingFolder);
 		STDMETHOD(AddDestination)(BSTR category, BSTR name, BSTR path, BSTR arguments, BSTR icon, int iconIndex, BSTR workingFolder);
 		STDMETHOD(AddSeparator)(BSTR category);

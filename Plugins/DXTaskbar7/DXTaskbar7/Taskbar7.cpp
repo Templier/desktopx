@@ -533,6 +533,14 @@ STDMETHODIMP CTaskbar7::SetProgressValue(ULONGLONG completed, ULONGLONG total)
 * Tasks and destinations
 *************************************/
 
+STDMETHODIMP CTaskbar7::SetAppID(BSTR appID)
+{
+	m_appID = wstring(appID);
+
+	return S_OK;
+}
+
+
 STDMETHODIMP CTaskbar7::RemoveAllDestinations()
 {
 	// Do nothing on XP & Vista
@@ -652,6 +660,9 @@ STDMETHODIMP CTaskbar7::CommitList()
 	UINT uMaxSlots = 20;
 	IObjectArray *poaRemoved;
 
+	if (!m_appID.empty())
+		m_pCustomDestinationList->SetAppID(m_appID.c_str());
+
 	HRESULT hr = m_pCustomDestinationList->BeginList(&uMaxSlots, IID_PPV_ARGS(&poaRemoved));
 
 	// Iterate over the lists to create
@@ -668,7 +679,9 @@ STDMETHODIMP CTaskbar7::CommitList()
 			KNOWNDESTCATEGORY knownDestination;
 			category.compare(DESTINATION_FREQUENT) == 0 ? knownDestination = KDC_FREQUENT : knownDestination = KDC_RECENT;
 
-			/*HRESULT hr = */m_pCustomDestinationList->AppendKnownCategory(knownDestination);
+			HRESULT hr = m_pCustomDestinationList->AppendKnownCategory(knownDestination);
+			if (FAILED(hr)) // Should not happen
+			continue;
 
 			iterator++;
 			continue;
@@ -839,18 +852,49 @@ Exit:
 
 HRESULT CTaskbar7::AddRecent(BSTR name, BSTR path, BSTR arguments, BSTR icon)
 {
-	IShellLink *pShellLink;
-	Destination recent(Recent, name, path, arguments, icon, 0, L"");
+	USES_CONVERSION;
 
-	HRESULT hr = CreateShellLink(recent, &pShellLink);
+	// ANSI version doesn't seem to work correctly with Win7 jump lists, so explicitly use Unicode interface.
+	IShellLinkW *pShellLink = NULL;
+	IPropertyStore *pPropertyStore = NULL;
+	PROPVARIANT propVariant;
+
+	HRESULT hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pShellLink));
+	EXIT_ON_ERROR(hr);
+
+	// Path
+	hr = pShellLink->SetPath(path);
+	EXIT_ON_ERROR(hr);
+
+	// Arguments
+	hr = pShellLink->SetArguments(arguments);
+	EXIT_ON_ERROR(hr);
+
+	// Icon Location
+	hr = pShellLink->SetIconLocation(wstring(icon).empty() ? path : icon, 0);
+	EXIT_ON_ERROR(hr);
+
+	hr = pShellLink->QueryInterface(IID_PPV_ARGS(&pPropertyStore));
+	EXIT_ON_ERROR(hr);
+
+	// Name
+	hr = InitPropVariantFromString(name, &propVariant);
+	EXIT_ON_ERROR(hr);
+
+	hr = pPropertyStore->SetValue(PKEY_Title, propVariant);
+	EXIT_ON_ERROR(hr);
+
+	hr = pPropertyStore->Commit();
 	EXIT_ON_ERROR(hr);
 
 	// SHAddToRecentDocs will cause the link to be added to the Recent list, allowing the user to pin them.
 	SHAddToRecentDocs(SHARD_LINK, pShellLink);
 
 Exit:
+	PropVariantClear(&propVariant);
+
+	SAFE_RELEASE(pPropertyStore);
 	SAFE_RELEASE(pShellLink);
 
 	return hr;
 }
-

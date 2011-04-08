@@ -137,6 +137,9 @@ Discontinues a Jump List building session without committing any changes
 ** Changelog
 *******************************************************************************************************
 
+Version 1.1 Build 230
+  * Implement recent items
+
 Version 1.0 Build 302
   * Added Taskbar_OnShowTab() callback to allow objects to get focus when a taskbar preview is clicked
 

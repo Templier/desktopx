@@ -73,7 +73,7 @@ BEGIN
             VALUE "FileDescription", "DesktopX plugin : Taskbar extended support for Windows 7"
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "DXTaskbar7.dll"
-            VALUE "LegalCopyright", "(c) 2009 Julien Templier.  All rights reserved."
+            VALUE "LegalCopyright", "(c) 2009-2011 Julien Templier.  All rights reserved."
             VALUE "OriginalFilename", "DXTaskbar7.dll"
             VALUE "ProductName", "DXTaskbar7"
             VALUE "ProductVersion", "1.0.0.1"
