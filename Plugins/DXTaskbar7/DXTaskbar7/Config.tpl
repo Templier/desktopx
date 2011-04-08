@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// This file is used as a template by SubWCRev
+// This file is used as a template
 // 
 // DO NOT MODIFY, IT WILL BE OVERWRITTEN AT BUILD TIME
 // MAKE MODIFICATIONS TO .tpl file
 //
-//	
+//
 // SubWCRev.exe $(ProjectDir) "$(ProjectDir)/Sources/Config.tpl" "$(ProjectDir)/Sources/Config.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,8 +17,9 @@
 #define PLUGIN_HOSTS		SD_HOST_DESKTOPX
 
 #define VERSION_MAJOR 1  
-#define VERSION_MINOR 0
-#define VERSION_BUILD $WCREV$
+#define VERSION_MINOR 1
+#define VERSION_BUILD $REVNUM$
+#define VERSION_DIRTY $DIRTY$
 
 #ifdef DEBUG
 #define EXPIRATION_YEAR 2011

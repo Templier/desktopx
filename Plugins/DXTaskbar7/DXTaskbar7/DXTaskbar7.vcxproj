@@ -172,12 +172,7 @@
   <ItemGroup>
     <CustomBuild Include="Config.tpl">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SubWCRev.exe $(ProjectDir) "$(ProjectDir)/Config.tpl" "$(ProjectDir)/Config.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Config.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SubWCRev.exe $(ProjectDir) "$(ProjectDir)/Config.tpl" "$(ProjectDir)/Config.h"
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Config.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild>true</ExcludedFromBuild>
     </CustomBuild>
     <None Include="DXTaskbar7.def" />
     <None Include="Taskbar7.rgs" />
@@ -193,4 +188,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <UsingTask TaskName="HgVersionFile" AssemblyFile="$(SolutionDir)\..\SDK\MSBuildVersioning.dll" />
+  <Target Name="PreBuildEvent">
+    <HgVersionFile TemplateFile="$(ProjectDir)\Config.tpl" DestinationFile="$(ProjectDir)\Config.h" />
+  </Target>
 </Project>
