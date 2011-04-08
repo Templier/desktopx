@@ -2,7 +2,7 @@
 //
 // DXTaskbar7 - Extended Taskbar Support for Windows 7
 //
-// Copyright (c) 2009-2010, Julien Templier
+// Copyright (c) 2009-2011, Julien Templier
 // All rights reserved.
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////

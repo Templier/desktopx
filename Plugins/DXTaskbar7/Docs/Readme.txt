@@ -1,5 +1,5 @@
 DXTaskbar7 plugin for DesktopX
- Copyright (c) 2009-2010 Julien Templier
+ Copyright (c) 2009-2011 Julien Templier
 -------------------------------------------------------------------------------------------------------
 
 The DXTaskbar7 plugin is a scripting plugin that exposes Windows 7 taskbar
