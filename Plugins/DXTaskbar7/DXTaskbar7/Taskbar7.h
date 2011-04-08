@@ -245,6 +245,8 @@ END_COM_MAP()
 		STDMETHOD(AddSeparator)(BSTR category);
 		STDMETHOD(AppendKnownCategory)(int knownDestCategory);
 
+		// Recent
+		STDMETHOD(AddRecent)(BSTR name, BSTR path, BSTR arguments, BSTR icon);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Taskbar7), CTaskbar7)

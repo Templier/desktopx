@@ -55,6 +55,9 @@ interface ITaskbar7 : IDispatch{
 
 	[helpstring("Declares that the Jump List is complete and ready for display")] HRESULT CommitList();
 	[helpstring("Discontinues a Jump List building session without committing any changes")] HRESULT AbortList();
+
+	// Recent items
+	[helpstring("Add an entry to the recent items")] HRESULT AddRecent([in] BSTR name, [in] BSTR path, [in] BSTR arguments, [in] BSTR icon);
 };
 
 [

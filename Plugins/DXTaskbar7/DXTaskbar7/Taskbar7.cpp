@@ -836,3 +836,21 @@ Exit:
 
 	return hr;
 }
+
+HRESULT CTaskbar7::AddRecent(BSTR name, BSTR path, BSTR arguments, BSTR icon)
+{
+	IShellLink *pShellLink;
+	Destination recent(Recent, name, path, arguments, icon, 0, L"");
+
+	HRESULT hr = CreateShellLink(recent, &pShellLink);
+	EXIT_ON_ERROR(hr);
+
+	// SHAddToRecentDocs will cause the link to be added to the Recent list, allowing the user to pin them.
+	SHAddToRecentDocs(SHARD_LINK, pShellLink);
+
+Exit:
+	SAFE_RELEASE(pShellLink);
+
+	return hr;
+}
+
