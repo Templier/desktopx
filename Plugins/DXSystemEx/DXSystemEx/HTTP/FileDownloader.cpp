@@ -240,6 +240,10 @@ int FileDownloader::Download(string remoteUrl, string localPath, bool isDownload
 	context->localPath = localPath;
 	context->isDownload = isDownload;
 
+	// For POST
+	LPCWSTR additionalHeaders = L"Content-Type: application/x-www-form-urlencoded\r\n";
+	DWORD dataSize = 0;
+
 	m_requests[m_sessionCounter] = context;
 
 	// Increment session counter
@@ -262,6 +266,7 @@ int FileDownloader::Download(string remoteUrl, string localPath, bool isDownload
 		}
 	} else {
 		// Setup buffer for posted data
+		dataSize = localPath.size();
 	}
 
 	// Check the url
@@ -296,12 +301,12 @@ int FileDownloader::Download(string remoteUrl, string localPath, bool isDownload
 
 	// Open the request
 	context->hRequest = WinHttpOpenRequest(context->hConnect,
-										   (!isDownload && !localPath.empty()) ? L"POST" : L"GET",
-									       UrlComponents.lpszUrlPath,
-									       L"HTTP/1.1",
-										   WINHTTP_NO_REFERER,
-										   WINHTTP_DEFAULT_ACCEPT_TYPES,
-									       (UrlComponents.nScheme == INTERNET_SCHEME_HTTPS) ? WINHTTP_FLAG_SECURE : 0);
+	                                       (!isDownload && !localPath.empty()) ? L"POST" : L"GET",
+	                                       UrlComponents.lpszUrlPath,
+	                                       L"HTTP/1.1",
+	                                       WINHTTP_NO_REFERER,
+	                                       WINHTTP_DEFAULT_ACCEPT_TYPES,
+	                                       (UrlComponents.nScheme == INTERNET_SCHEME_HTTPS) ? WINHTTP_FLAG_SECURE : 0);
 
 	if (context->hRequest == NULL)
 	{
@@ -311,20 +316,20 @@ int FileDownloader::Download(string remoteUrl, string localPath, bool isDownload
 
 	// Set the callback
 	WinHttpSetStatusCallback(context->hRequest,
-							 (WINHTTP_STATUS_CALLBACK)&DownloadStatusCallback,
-						     WINHTTP_CALLBACK_FLAG_ALL_COMPLETIONS |
-							 WINHTTP_CALLBACK_FLAG_HANDLES,   // to listen to the HANDLE_CLOSING event
-							 0);
+	                         (WINHTTP_STATUS_CALLBACK)&DownloadStatusCallback,
+	                         WINHTTP_CALLBACK_FLAG_ALL_COMPLETIONS |
+	                         WINHTTP_CALLBACK_FLAG_HANDLES,   // to listen to the HANDLE_CLOSING event
+	                         0);
 
 
 	// Send a request
 	if (WinHttpSendRequest(context->hRequest,
-						   WINHTTP_NO_ADDITIONAL_HEADERS,
-						   0,
-						   WINHTTP_NO_REQUEST_DATA,
-						   0,
-						   0,
-						   (DWORD_PTR)context) == FALSE)
+	                       isDownload ? WINHTTP_NO_ADDITIONAL_HEADERS : additionalHeaders,
+	                       isDownload ? 0 : -1,
+	                       (!isDownload && !localPath.empty()) ? (LPVOID)localPath.c_str() : WINHTTP_NO_REQUEST_DATA,
+	                       dataSize,
+	                       dataSize,
+	                       (DWORD_PTR)context) == FALSE)
 	{
 		CompletionCallback(context, RequestSendFailed);
 		goto error_exit;
