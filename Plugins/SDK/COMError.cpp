@@ -2,7 +2,7 @@
 //
 // CCOMError Class - Error Dispatch for COM components
 //
-// Copyright (c) 2008-2010, Julien Templier
+// Copyright (c) 2008-2011, Julien Templier
 // All rights reserved.
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////

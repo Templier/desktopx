@@ -11,3 +11,8 @@ Plugins/DXSystemEx/DXSystemEx/dlldata.c
 Docs/DesktopX Script Manual/settings.xml
 Plugins/DXTaskbar7/Widget/DXTaskbar7.zip
 Plugins/DXTaskbar7/Widget/CreateSymbolicLink.cmd
+Plugins/DXTaskbar7/DXTaskbar7/DXTaskbar7_p.c
+Plugins/DXTaskbar7/DXTaskbar7/Config.h
+Plugins/DXTaskbar7/DXTaskbar7/dlldata.c
+Plugins/DXTaskbar7/DXTaskbar7/DXTaskbar7_i.c
+Plugins/DXTaskbar7/DXTaskbar7/DXTaskbar7.h
