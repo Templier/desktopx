@@ -47,6 +47,14 @@ extern HINSTANCE dllInstance;
 HMODULE WINAPI MyGetModuleHandleA(LPCTSTR lpModuleName);
 HMODULE WINAPI MyGetModuleHandleW(LPCWSTR lpModuleName);
 
+// List of backlisted docklets
+static const struct {
+	char name[MAX_PATH];
+	char author[MAX_PATH];
+} _blacklistedDocklets[1] = {
+	{"Weather Docklet", "Jeff Bargmann"}
+};
+
 //////////////////////////////////////////////////////////////////////////
 // Constructor&Destructor
 //////////////////////////////////////////////////////////////////////////
@@ -234,13 +242,22 @@ void Docklet::GetObjectDockFolder(char* path)
 	DWORD type = REG_SZ;
 	char buffer[MAX_PATH];
 
-	// Open parent key
-	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, OBJECTDOCK_KEY, NULL, KEY_READ, &key) != ERROR_SUCCESS) {
-		// Try to open the free version
-		if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, OBJECTDOCK_FREE_KEY, NULL, KEY_READ, &key) != ERROR_SUCCESS)
-			return;
-	}
+	// Try ObjectDockPlus2 keys
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, OBJECTDOCK2_KEY, NULL, KEY_READ, &key) == ERROR_SUCCESS)
+		goto read_path;
 
+	// Try ObjectDockPlus
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, OBJECTDOCK_KEY, NULL, KEY_READ, &key) == ERROR_SUCCESS)
+		goto read_path;
+
+	// Try ObjectDock free version
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, OBJECTDOCK_FREE_KEY, NULL, KEY_READ, &key) == ERROR_SUCCESS)
+		goto read_path;
+
+	// Cannot found installation of ObjectDock, bailing out
+	return;
+
+read_path:
 	size = sizeof(buffer);
 	strcpy_s((char*)&buffer, size, "");
 	if (RegQueryValueExA(key, "Path", NULL, &type, (LPBYTE)&buffer, &size) == ERROR_SUCCESS)
@@ -670,6 +687,15 @@ void Docklet::LoadInformation(OD_GETINFORMATION funcPointer, DOCKLET_INFO* info)
 Docklet::DOCKLET_INFO Docklet::GetInformation()
 {
 	return info;
+}
+
+bool Docklet::IsBlacklisted(DOCKLET_INFO info) {
+	for (int i = 0; i < ARRAYSIZE(_blacklistedDocklets); i++) {
+		if (!strcmp(info.name, _blacklistedDocklets[i].name) && !strcmp(info.author, _blacklistedDocklets[i].author))
+			return true;
+	}
+
+	return false;
 }
 
 

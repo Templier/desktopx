@@ -45,9 +45,6 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Builds\$(Configuration)\Intermediate\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PreBuildEvent>
-      <Command>echo "C:\Program Files\TortoiseSVN\bin\SubWCRev.exe" $(ProjectDir) "$(ProjectDir)/Sources/version.tpl" "$(ProjectDir)/Sources/version.h"</Command>
-    </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../ObjectDock/DockletSDK/Native/DockletSDK;../SDK/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -116,12 +113,7 @@
     <None Include="Sources\ObjectDock.png" />
     <CustomBuild Include="Sources\version.tpl">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"c:/Program Files/TortoiseSVN/bin/SubWCRev.exe" $(SolutionDir) %(FullPath) %(RootDir)%(Directory)/version.h
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">version.h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"c:/Program Files/TortoiseSVN/bin/SubWCRev.exe" $(SolutionDir)/Sources %(FullPath) %(RootDir)%(Directory)/version.h
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">version.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild>true</ExcludedFromBuild>
     </CustomBuild>
     <None Include="Docs\Description.txt" />
     <None Include="Docs\Readme.txt" />
@@ -132,4 +124,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <UsingTask TaskName="HgVersionFile" AssemblyFile="$(SolutionDir)\..\SDK\MSBuildVersioning.dll" />
+  <Target Name="PreBuildEvent">
+    <HgVersionFile TemplateFile="$(ProjectDir)\Sources\version.tpl" DestinationFile="$(ProjectDir)\Sources\version.h" />
+  </Target>
 </Project>

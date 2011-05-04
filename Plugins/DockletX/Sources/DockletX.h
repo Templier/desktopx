@@ -42,11 +42,11 @@ using namespace std;
 
 #include "Docklet.h"
 
-#define PLUGIN_NAME			"DockletX"
-#define PLUGIN_AUTHOR		"Julien Templier"
-#define PLUGIN_CAPABILITY	"ObjectDock Docklet Support"
-#define PLUGIN_PLATFORM		SD_OS_XP
-#define PLUGIN_HOSTS		SD_HOST_DESKTOPX | SD_HOST_OBJECTBAR
+#define PLUGIN_NAME         "DockletX"
+#define PLUGIN_AUTHOR       "Julien Templier"
+#define PLUGIN_CAPABILITY   "ObjectDock Docklet Support"
+#define PLUGIN_PLATFORM     SD_OS_XP
+#define PLUGIN_HOSTS        SD_HOST_DESKTOPX | SD_HOST_OBJECTBAR
 
 //////////////////////////////////////////////////////////////////////////
 // Plugin configuration

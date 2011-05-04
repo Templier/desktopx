@@ -46,8 +46,9 @@ using namespace std;
 #define DOCKLET_SIZE_MAX 256
 #define DOCKLET_DEFAULT_SIZE 128
 #define DOCKLET_CONFIG_SECTION "DockletConfig"
-#define OBJECTDOCK_KEY "Software\\Stardock\\Misc\\ObjectDock\\"
-#define OBJECTDOCK_FREE_KEY "Software\\Stardock\\FreeStuff\\ObjectDock\\"
+#define OBJECTDOCK_KEY       "Software\\Stardock\\Misc\\ObjectDock\\"
+#define OBJECTDOCK2_KEY      "Software\\Stardock\\ObjectDesktop\\ObjectDockPlus2\\"
+#define OBJECTDOCK_FREE_KEY  "Software\\Stardock\\FreeStuff\\ObjectDock\\"
 
 #pragma hdrstop
 #pragma optimize("", off)
@@ -233,6 +234,7 @@ private:
 		// Informations
 		DOCKLET_INFO GetInformation();
 		static DOCKLET_INFO GetInformationFromDll(char* dll);
+		static bool IsBlacklisted(DOCKLET_INFO info);
 
 		// Misc
 		static void GetObjectDockFolder(char* path);

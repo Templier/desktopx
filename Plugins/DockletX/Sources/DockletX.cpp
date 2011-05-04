@@ -88,7 +88,8 @@ void LoadPlugins()
 				DOCKLET_LIST item;
 				sprintf_s(item.path, "%s\\Docklets\\%s\\%s", rootPath, FindFileData.cFileName, FindDllData.cFileName);
 				item.info = Docklet::GetInformationFromDll((char*)item.path);
-				if (item.info.valid)
+
+				if (item.info.valid && !Docklet::IsBlacklisted(item.info))
 					pluginData->docklets.push_back(item);
 			}
 			FindClose(hFindDll);
