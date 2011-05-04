@@ -1,5 +1,5 @@
 DockletX plugin for DesktopX
- Copyright (c) 2006-2010 Julien Templier
+ Copyright (c) 2006-2011 Julien Templier
 --------------------------------------------------------------------------
 
 DockletX is a DesktopX plugin that allows you to use ObjectDock docklets
@@ -42,12 +42,18 @@ PLEASE REPORT ALL BUGS IN THIS THREAD: http://forums.wincustomize.com/339574/
 ** Changelog
 ***************************************************************************
 
-1.0 Build 604: Corrected detection of free version of ObjectDock
+1.2 Build 235
+	- Add support for ObjectDock 2
+	- Blacklist Weather docklet (it doesn't work outside of ObjectDock as-is)
 
-1.0 Build 418: First public release
+1.0 Build 604
+	- Corrected detection of free version of ObjectDock
 
-1.0 Build 389: Test version
+1.0 Build 418
+	- First public release
 
+1.0 Build 389
+	- Test version
 
 ***************************************************************************
 ** License
