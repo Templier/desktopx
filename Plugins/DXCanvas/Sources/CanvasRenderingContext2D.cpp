@@ -1427,7 +1427,7 @@ STDMETHODIMP CCanvasRenderingContext2D::drawImageRegion(VARIANT vInput, float sx
 
 	imgWidth = (float)pImage->getWidth();
 	imgHeight = (float)pImage->getHeight();
-	pattern = createNewPatternFromSurface(pImage->getSurface(), pImage->getWidth(), pImage->getHeight());
+	pattern = createNewPatternFromSurface(pImage->getSurface(), (int)imgWidth, (int)imgHeight);
 
 pattern_loaded:
 	if (!pattern || cairo_pattern_status(pattern) != CAIRO_STATUS_SUCCESS)
@@ -1439,6 +1439,8 @@ pattern_loaded:
 		goto cleanup;
 	else if (dw.vt == VT_I4)
 		dWidth = (float)dw.lVal;
+	else if (dw.vt == VT_I2)
+		dWidth = (float)dw.intVal;
 	else
 		dWidth = sw;
 
@@ -1446,6 +1448,8 @@ pattern_loaded:
 		goto cleanup;
 	else if (dh.vt == VT_I4)
 		dHeight = (float)dh.lVal;
+	else if (dh.vt == VT_I2)
+		dHeight = (float)dh.intVal;
 	else
 		dHeight = sh;
 
