@@ -4,5 +4,5 @@
 
 #ifdef DEFINE_PACKAGE_PANGO
 #define PACKAGE "pango"
-#define VERSION "1.26.0"
+#define VERSION "1.28.3"
 #endif

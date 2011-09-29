@@ -84,7 +84,6 @@
     <ClCompile Include="cairo\src\cairo-image-surface.c" />
     <ClCompile Include="cairo\src\cairo-lzw.c" />
     <ClCompile Include="cairo\src\cairo-matrix.c" />
-    <ClCompile Include="cairo\src\cairo-meta-surface.c" />
     <ClCompile Include="cairo\src\cairo-misc.c" />
     <ClCompile Include="cairo\src\cairo-mutex.c" />
     <ClCompile Include="cairo\src\cairo-output-stream.c" />

@@ -96,9 +96,6 @@
     <ClCompile Include="cairo\src\cairo-matrix.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cairo\src\cairo-meta-surface.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cairo\src\cairo-misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -30,16 +30,24 @@ free_data(void* data)
 
 #define HAVE_WINDOWS_H 1
 
-#define CAIRO_HAS_WIN32_SURFACE 1
-#define CAIRO_HAS_WIN32_FONT 1
-#define CAIRO_HAS_FONT_SUBSET 1
+#define CAIRO_HAS_FC_FONT 1
+#define CAIRO_HAS_FT_FONT 1
+#define CAIRO_HAS_GOBJECT_FUNCTIONS 1
+#define CAIRO_HAS_IMAGE_SURFACE 1
+#define CAIRO_HAS_PDF_SURFACE 1
 #define CAIRO_HAS_PNG_FUNCTIONS 1
+#define CAIRO_HAS_PS_SURFACE 1
+#define CAIRO_HAS_RECORDING_SURFACE 1
+#define CAIRO_HAS_SVG_SURFACE 1
+#define CAIRO_HAS_USER_FONT 1
+#define CAIRO_HAS_WIN32_FONT 1
+#define CAIRO_HAS_WIN32_SURFACE 1
 
 #ifndef PACKAGE_NAME
 #define PACKAGE_NAME "cairo"
 #define PACKAGE_TARNAME "cairo"
-#define PACKAGE_VERSION "1.8.6"
-#define PACKAGE_STRING "cairo 1.8.6"
+#define PACKAGE_VERSION "1.10.2"
+#define PACKAGE_STRING "cairo 1.10.2"
 #define PACKAGE_BUGREPORT "http://bugs.freedesktop.org/enter_bug.cgi?product=cairo"
 #endif
 

@@ -57,10 +57,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glib\gobject\gboxed.c" />
-    <ClCompile Include="glib\gobject\gclosure.c" />
     <ClCompile Include="glib\gobject\genums.c" />
     <ClCompile Include="glib\gobject\gobject.c" />
-    <ClCompile Include="glib\gobject\gobjectaliasdef.c" />
     <ClCompile Include="glib\gobject\gobjectnotifyqueue.c" />
     <ClCompile Include="glib\gobject\gparam.c" />
     <ClCompile Include="glib\gobject\gparamspecs.c" />

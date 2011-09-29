@@ -61,16 +61,13 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="glib\glib\galiasdef.c" />
     <ClCompile Include="glib\glib\garray.c" />
     <ClCompile Include="glib\glib\gasyncqueue.c" />
-    <ClCompile Include="glib\glib\gatomic.c" />
     <ClCompile Include="glib\glib\gbacktrace.c" />
     <ClCompile Include="glib\glib\gbase64.c" />
     <ClCompile Include="glib\glib\gbookmarkfile.c" />
     <ClCompile Include="glib\glib\gcache.c" />
     <ClCompile Include="glib\glib\gchecksum.c" />
-    <ClCompile Include="glib\glib\gcompletion.c" />
     <ClCompile Include="glib\glib\gconvert.c" />
     <ClCompile Include="glib\glib\gdataset.c" />
     <ClCompile Include="glib\glib\gdate.c" />
@@ -98,7 +95,6 @@
     <ClCompile Include="glib\glib\gqueue.c" />
     <ClCompile Include="glib\glib\grand.c" />
     <ClCompile Include="glib\glib\gregex.c" />
-    <ClCompile Include="glib\glib\grel.c" />
     <ClCompile Include="glib\glib\gscanner.c" />
     <ClCompile Include="glib\glib\gsequence.c" />
     <ClCompile Include="glib\glib\gshell.c" />
@@ -136,21 +132,17 @@
     <ClCompile Include="glib\glib\pcre\pcre_fullinfo.c" />
     <ClCompile Include="glib\glib\pcre\pcre_get.c" />
     <ClCompile Include="glib\glib\pcre\pcre_globals.c" />
-    <ClCompile Include="glib\glib\pcre\pcre_info.c" />
-    <ClCompile Include="glib\glib\pcre\pcre_maketables.c" />
     <ClCompile Include="glib\glib\pcre\pcre_newline.c" />
     <ClCompile Include="glib\glib\pcre\pcre_ord2utf8.c" />
-    <ClCompile Include="glib\glib\pcre\pcre_refcount.c" />
     <ClCompile Include="glib\glib\pcre\pcre_study.c" />
     <ClCompile Include="glib\glib\pcre\pcre_tables.c" />
     <ClCompile Include="glib\glib\pcre\pcre_try_flipped.c" />
     <ClCompile Include="glib\glib\pcre\pcre_ucp_searchfuncs.c" />
-    <ClCompile Include="glib\glib\pcre\pcre_valid_utf8.c" />
-    <ClCompile Include="glib\glib\pcre\pcre_version.c" />
     <ClCompile Include="glib\glib\pcre\pcre_xclass.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glib\glib\gpoll.h" />
+    <ClInclude Include="glib\glib\gtypes.h" />
     <ClInclude Include="include\glib\config.h" />
     <ClInclude Include="include\glib\glibconfig.h" />
   </ItemGroup>

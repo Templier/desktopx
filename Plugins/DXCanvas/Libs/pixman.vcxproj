@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>D:\Apps\Perl\Perl64\bin\perl $(ProjectDir)\pixman\pixman\make-combine.pl 8 &lt; $(ProjectDir)\pixman\pixman\pixman-combine.c.template &gt; $(ProjectDir)\pixman\pixman\pixman-combine32.c
+      <Command>perl $(ProjectDir)\pixman\pixman\make-combine.pl 8 &lt; $(ProjectDir)\pixman\pixman\pixman-combine.c.template &gt; $(ProjectDir)\pixman\pixman\pixman-combine32.c
 D:\Apps\Perl\Perl64\bin\perl $(ProjectDir)\pixman\pixman\make-combine.pl 8 &lt; $(ProjectDir)\pixman\pixman\pixman-combine.h.template &gt; $(ProjectDir)\pixman\pixman\pixman-combine32.h
 D:\Apps\Perl\Perl64\bin\perl $(ProjectDir)\pixman\pixman\make-combine.pl 16 &lt; $(ProjectDir)\pixman\pixman\pixman-combine.c.template &gt; $(ProjectDir)\pixman\pixman\pixman-combine64.c
 D:\Apps\Perl\Perl64\bin\perl $(ProjectDir)\pixman\pixman\make-combine.pl 16 &lt; $(ProjectDir)\pixman\pixman\pixman-combine.h.template &gt; $(ProjectDir)\pixman\pixman\pixman-combine64.h
