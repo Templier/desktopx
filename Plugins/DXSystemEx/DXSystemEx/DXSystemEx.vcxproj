@@ -165,6 +165,8 @@
     <ClCompile Include="..\..\SDK\COMError.cpp" />
     <ClCompile Include="SystemEx.cpp" />
     <ClCompile Include="Monitor\MonitorInfo.cpp" />
+    <ClCompile Include="Touch\GestureInfo.cpp" />
+    <ClCompile Include="Touch\TouchInfo.cpp" />
     <ClCompile Include="Volume\MixerAPI.cpp" />
     <ClCompile Include="Volume\VistaCallBackSetup.cpp" />
     <ClCompile Include="Volume\VistaVolumeCallback.cpp" />
@@ -193,6 +195,8 @@
     <ClInclude Include="..\..\SDK\SDScriptedPlugin.h" />
     <ClInclude Include="SystemEx.h" />
     <ClInclude Include="Monitor\MonitorInfo.h" />
+    <ClInclude Include="Touch\GestureInfo.h" />
+    <ClInclude Include="Touch\TouchInfo.h" />
     <ClInclude Include="Volume\IVolumeEventsConnectionPoint.h" />
     <ClInclude Include="Volume\MixerAPI.h" />
     <ClInclude Include="Volume\VistaCallBackSetup.h" />

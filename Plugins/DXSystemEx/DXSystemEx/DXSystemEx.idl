@@ -25,6 +25,34 @@ interface IArchiveItem : IDispatch{
 
 [
 	object,
+	uuid(26609809-C842-471D-ADF4-DC4A5D80601C),
+	dual,
+	nonextensible,
+	helpstring("IGestureInfo Interface"),
+	pointer_default(unique)
+]
+interface IGestureInfo : IDispatch{
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Properties
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+};
+
+[
+	object,
+	uuid(04121442-858F-45B7-A273-3A7AE0E4E83F),
+	dual,
+	nonextensible,
+	helpstring("ITouchInfo Interface"),
+	pointer_default(unique)
+]
+interface ITouchInfo : IDispatch{
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Properties
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+};
+
+[
+	object,
 	uuid(9D1E1F8B-3D11-466e-956A-CC86AC9658D8),
 	dual,
 	nonextensible,
@@ -159,7 +187,6 @@ library DXSystemExLib
 		[id(2), helpstring("Fired as a result of a muting state change. isMuted is True is the volume is muted, False otherwise.")] HRESULT OnMuteEvent(BOOL isMuted);
 	};
 
-	importlib("stdole2.tlb");
 	[
 		uuid(65C94091-C8AE-4423-99A2-CEAE94F91E62),
 		helpstring("SystemEx Class")
@@ -171,7 +198,26 @@ library DXSystemExLib
 		interface ISupportErrorInfo;
 	};
 
-	importlib("stdole2.tlb");
+	[
+		uuid(B3634CE8-980F-41A2-B81E-8F9966732E0B),
+		helpstring("GestureInfo Class")
+	]
+	coclass GestureInfo
+	{
+		[default] interface IGestureInfo;
+		interface ISupportErrorInfo;
+	};
+
+	[
+		uuid(98D78951-E161-4AF4-8710-702AF39A9743),
+		helpstring("TouchInfo Class")
+	]
+	coclass TouchInfo
+	{
+		[default] interface ITouchInfo;
+		interface ISupportErrorInfo;
+	};
+
 	[
 		uuid(71A818BD-456F-44cd-95B3-5B5338F63E1D),
 		helpstring("MonitorInfo Class")
@@ -182,7 +228,6 @@ library DXSystemExLib
 		interface ISupportErrorInfo;
 	};
 
-	importlib("stdole2.tlb");
 	[
 		uuid(FA95AF31-18C6-4310-94F2-62282D42A683),
 		helpstring("ArchiveItem Class")
@@ -193,7 +238,6 @@ library DXSystemExLib
 		interface ISupportErrorInfo;
 	};
 
-	importlib("stdole2.tlb");
 	[
 		uuid(796B8264-38CE-4c63-8657-C1B114CA9DF8),
 		helpstring("Archive Class")

@@ -47,6 +47,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="COM/Functions\Touch">
+      <UniqueIdentifier>{db0bd06f-ef9e-4789-88bb-5cd5334cc966}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\SDK\COMError.cpp">
@@ -105,6 +108,12 @@
     </ClCompile>
     <ClCompile Include="Archive\XZip.cpp">
       <Filter>COM/Functions\Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="Touch\TouchInfo.cpp">
+      <Filter>COM/Functions\Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="Touch\GestureInfo.cpp">
+      <Filter>COM/Functions\Touch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +188,12 @@
     </ClInclude>
     <ClInclude Include="Archive\XZip.h">
       <Filter>COM/Functions\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="Touch\GestureInfo.h">
+      <Filter>COM/Functions\Touch</Filter>
+    </ClInclude>
+    <ClInclude Include="Touch\TouchInfo.h">
+      <Filter>COM/Functions\Touch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

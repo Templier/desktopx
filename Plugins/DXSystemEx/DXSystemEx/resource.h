@@ -8,6 +8,8 @@
 #define IDR_ARCHIVE                     103
 #define IDR_FILEINFO                    104
 #define IDR_ARCHIVEITEM                 105
+#define IDR_GESTUREINFO                 106
+#define IDR_TOUCHINFO                   107
 #define IDD_CONFIG                      201
 #define IDB_PICTURE                     202
 #define IDC_BUILD                       203
@@ -22,12 +24,12 @@
 #define IDC_MULTITOUCH                  210
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        106
+#define _APS_NEXT_RESOURCE_VALUE        108
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         211
-#define _APS_NEXT_SYMED_VALUE           104
+#define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
