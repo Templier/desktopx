@@ -23,7 +23,7 @@
 #define VERSION_BUILD 		${Revision}
 
 #ifdef DEBUG
-#define EXPIRATION_YEAR 	2011
+#define EXPIRATION_YEAR 	2012
 #define EXPIRATION_MONTH 	10
 #define EXPIRATION_DAY 		5
 #endif

@@ -79,8 +79,9 @@ INT_PTR CALLBACK ConfigurePlugin(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lPa
 
 			// Init & fill the controls
 			CheckDlgButton(hDlg, IDC_DRAGANDDROP, config->enableDnD);
-			CheckDlgButton(hDlg, IDC_MONITORS, config->enableMonitors);
-			CheckDlgButton(hDlg, IDC_INSTANCE, config->enableInstance);
+			CheckDlgButton(hDlg, IDC_MONITORS,    config->enableMonitors);
+			CheckDlgButton(hDlg, IDC_INSTANCE,    config->enableInstance);
+			CheckDlgButton(hDlg, IDC_MULTITOUCH,  config->enableMultiTouch);
 
 #ifdef DEBUG
 			SetDlgItemText(hDlg, IDC_BETA, "BETA - DO NOT REDISTRIBUTE");
@@ -98,10 +99,11 @@ INT_PTR CALLBACK ConfigurePlugin(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lPa
 					if(!config)
 						break;
 
-					// Input boxes are set to number, so no need to check for conversion (famous last words :P)					
-					IsDlgButtonChecked(hDlg, IDC_DRAGANDDROP) ? config->enableDnD = true 	  : config->enableDnD = false;
-					IsDlgButtonChecked(hDlg, IDC_MONITORS) 	  ? config->enableMonitors = true : config->enableMonitors = false;
-					IsDlgButtonChecked(hDlg, IDC_INSTANCE)    ? config->enableInstance = true : config->enableInstance = false;
+					// Input boxes are set to number, so no need to check for conversion (famous last words :P)
+					IsDlgButtonChecked(hDlg, IDC_DRAGANDDROP) ? config->enableDnD        = true : config->enableDnD        = false;
+					IsDlgButtonChecked(hDlg, IDC_MONITORS)    ? config->enableMonitors   = true : config->enableMonitors   = false;
+					IsDlgButtonChecked(hDlg, IDC_INSTANCE)    ? config->enableInstance   = true : config->enableInstance   = false;
+					IsDlgButtonChecked(hDlg, IDC_MULTITOUCH)  ? config->enableMultiTouch = true : config->enableMultiTouch = false;
 				}
 
 				case IDCANCEL:
@@ -238,7 +240,7 @@ BOOL SDMessage(DWORD objID, DWORD *pluginIndex, UINT messageID, DWORD param1, DW
 #endif
 
 			DWORD *flags = (DWORD *) param1;
-			*flags = SD_FLAG_SUBCLASS |					 
+			*flags = SD_FLAG_SUBCLASS |
 					 SD_FLAG_NO_USER_CONFIG;
 
 			CComObject<CSystemEx>* pSystemEx;
@@ -280,9 +282,10 @@ label_expiration:
 			sprintf_s(iniFile, "%s\\DXSystemEx-%s.ini", objectDirectory, (char *) param1);
 
 			// Save configuration
-			pSystemEx->config->enableDnD = (GetPrivateProfileInt("Config", "EnableDnd", 1, iniFile) == 1);
-			pSystemEx->config->enableMonitors = (GetPrivateProfileInt("Config", "EnableMonitors", 1, iniFile) == 1);
-			pSystemEx->config->enableInstance = (GetPrivateProfileInt("Config", "EnableInstance", 1, iniFile) == 1);
+			pSystemEx->config->enableDnD        = (GetPrivateProfileInt("Config", "EnableDnd",        1, iniFile) == 1);
+			pSystemEx->config->enableMonitors   = (GetPrivateProfileInt("Config", "EnableMonitors",   1, iniFile) == 1);
+			pSystemEx->config->enableInstance   = (GetPrivateProfileInt("Config", "EnableInstance",   1, iniFile) == 1);
+			pSystemEx->config->enableMultiTouch = (GetPrivateProfileInt("Config", "EnableMultiTouch", 1, iniFile) == 1);
 
 			return TRUE;
 		}
@@ -312,9 +315,10 @@ label_expiration:
 			if (pSystemEx == NULL)
 				return FALSE;
 
-			pSystemEx->config->enableDnD	  = pOriginalSystemEx->config->enableDnD;
-			pSystemEx->config->enableMonitors = pOriginalSystemEx->config->enableMonitors;
-			pSystemEx->config->enableInstance = pOriginalSystemEx->config->enableInstance;
+			pSystemEx->config->enableDnD        = pOriginalSystemEx->config->enableDnD;
+			pSystemEx->config->enableMonitors   = pOriginalSystemEx->config->enableMonitors;
+			pSystemEx->config->enableInstance   = pOriginalSystemEx->config->enableInstance;
+			pSystemEx->config->enableMultiTouch = pOriginalSystemEx->config->enableMultiTouch;
 
 			return TRUE;
 		}
@@ -350,7 +354,7 @@ label_expiration:
 			switch(msg->message)
 			{
 				// Monitor information
-				case WM_DISPLAYCHANGE:				
+				case WM_DISPLAYCHANGE:
 					pSystemEx->EnableMonitorInfo(pSystemEx->config->enableMonitors);
 					break;
 
@@ -582,12 +586,13 @@ label_expiration:
 			sprintf_s(iniFile, "%s\\DXSystemEx-%s.ini", path, instanceID);
 
 			// Save configuration
-			WritePrivateProfileInt("Config", "EnableDnd", 	   pSystemEx->config->enableDnD ? 1 : 0, iniFile);
-			WritePrivateProfileInt("Config", "EnableMonitors", pSystemEx->config->enableMonitors ? 1 : 0, iniFile);
-			WritePrivateProfileInt("Config", "EnableInstance", pSystemEx->config->enableInstance ? 1 : 0, iniFile);
+			WritePrivateProfileInt("Config", "EnableDnd",        pSystemEx->config->enableDnD        ? 1 : 0, iniFile);
+			WritePrivateProfileInt("Config", "EnableMonitors",   pSystemEx->config->enableMonitors   ? 1 : 0, iniFile);
+			WritePrivateProfileInt("Config", "EnableInstance",   pSystemEx->config->enableInstance   ? 1 : 0, iniFile);
+			WritePrivateProfileInt("Config", "EnableMultiTouch", pSystemEx->config->enableMultiTouch ? 1 : 0, iniFile);
 
 			SDHostMessage(SD_REGISTER_FILE, (DWORD) iniFile, 0);
-			
+
 			return TRUE;
 		}
 
