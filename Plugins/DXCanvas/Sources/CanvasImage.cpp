@@ -94,6 +94,7 @@ HRESULT CCanvasImage::loadImage(wstring image)
 		return CCOMError::DispatchError(E_FAIL, CLSID_CanvasImage, _T("Internal error"), __FUNCTION__ ": failed to get the DC to the image surface", 0, NULL);
 
 	Graphics graphics(cairoDC);
+	bitmap->SetResolution((float)GetDeviceCaps(cairoDC, LOGPIXELSX), (float)GetDeviceCaps(cairoDC, LOGPIXELSY));
 	graphics.DrawImage(bitmap, 0, 0);
 
 	// Create a new pattern
