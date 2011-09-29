@@ -1,14 +1,32 @@
 syntax: glob
+Docs/DesktopX Script Manual/settings.xml
+
 Plugins/DXCanvas/Widget/Canvas Controller/*
+Plugins/DXCanvas/Libs/cairo/*
+Plugins/DXCanvas/Libs/glib/*
+Plugins/DXCanvas/Libs/libpng/*
+Plugins/DXCanvas/Libs/pango/*
+Plugins/DXCanvas/Libs/pixman/*
+Plugins/DXCanvas/Libs/zlib/*
+
+Plugins/DXCanvas/Sources/Config.h
+Plugins/DXCanvas/Sources/dlldata.c
+Plugins/DXCanvas/Sources/DXCanvas_p.c
+Plugins/DXCanvas/Sources/DXCanvas_i.c
+Plugins/DXCanvas/Sources/DXCanvas.h
+
 Plugins/DXSystemEx/Widget/SystemEx/*
+
 Plugins/DockletX/Docs/Docklets/*
+
 Plugins/DXTaskbar7/Widget/Taskbar7Sample/*
+
 Plugins/DXSystemEx/DXSystemEx/DXSystemEx_p.c
 Plugins/DXSystemEx/DXSystemEx/DXSystemEx_i.c
 Plugins/DXSystemEx/DXSystemEx/Config.h
 Plugins/DXSystemEx/DXSystemEx/DXSystemEx.h
 Plugins/DXSystemEx/DXSystemEx/dlldata.c
-Docs/DesktopX Script Manual/settings.xml
+
 Plugins/DXTaskbar7/Widget/DXTaskbar7.zip
 Plugins/DXTaskbar7/Widget/CreateSymbolicLink.cmd
 Plugins/DXTaskbar7/DXTaskbar7/DXTaskbar7_p.c
@@ -16,5 +34,6 @@ Plugins/DXTaskbar7/DXTaskbar7/Config.h
 Plugins/DXTaskbar7/DXTaskbar7/dlldata.c
 Plugins/DXTaskbar7/DXTaskbar7/DXTaskbar7_i.c
 Plugins/DXTaskbar7/DXTaskbar7/DXTaskbar7.h
+
 Plugins/DockletX/Sources/version.h
 Plugins/DockletX/Docs/DockletX.zip
