@@ -380,9 +380,9 @@ label_expiration:
 			sprintf_s(name, "%s\\DXCanvas-%s.ini", path, instanceID);
 
 			// Save configuration
-			WritePrivateProfileInt("Config", "Width", pCanvas->config->width, iniFile);
-			WritePrivateProfileInt("Config", "Height", pCanvas->config->width, iniFile);
-			WritePrivateProfileInt("Config", "AlphaBlend", pCanvas->config->alphablend ? 1 : 0, iniFile);
+			WritePrivateProfileInt("Config", "Width", pCanvas->config->width, name);
+			WritePrivateProfileInt("Config", "Height", pCanvas->config->width, name);
+			WritePrivateProfileInt("Config", "AlphaBlend", pCanvas->config->alphablend ? 1 : 0, name);
 
 			SDHostMessage(SD_REGISTER_FILE, (DWORD) name, 0);
 
