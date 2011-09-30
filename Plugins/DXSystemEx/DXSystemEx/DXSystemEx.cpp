@@ -45,7 +45,10 @@
 #include "SystemEx.h"
 
 #include "Utils/VersionCheck.h"
+#include "Touch/GestureInfo.h"
+#include "Touch/TouchInfo.h"
 #include "Volume/VistaCallBackSetup.h"
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Configuration Dialog
@@ -559,6 +562,132 @@ label_expiration:
 
 					free(se.dp.rgvarg);
 
+					return TRUE;
+				}
+
+				case WM_TOUCH:
+				{
+					if (!pSystemEx->config->enableMultiTouch)
+						return FALSE;
+
+					// Get touch information
+					UINT cInputs = LOWORD(msg->wParam);
+					PTOUCHINPUT pInputs = new TOUCHINPUT[cInputs];
+					if (pInputs == NULL)
+						return FALSE;
+
+					if (!GetTouchInputInfo((HTOUCHINPUT)msg->lParam, cInputs, pInputs, sizeof(TOUCHINPUT))) {
+						delete[] pInputs;
+						return FALSE;
+					}
+
+					// Create SafeArray of TouchInfo
+					SAFEARRAY *pSA;
+					SAFEARRAYBOUND aDim[1];
+					aDim[0].lLbound = 0;
+					aDim[0].cElements = cInputs;
+
+					pSA = SafeArrayCreate(VT_VARIANT, 1, aDim);
+					if (pSA != NULL) {
+						for (long l = aDim[0].lLbound; l < (signed)(aDim[0].cElements + aDim[0].lLbound); l++) {
+
+							VARIANT vOut;
+							VariantInit(&vOut);
+							vOut.vt = VT_DISPATCH;
+
+							// Init TouchInfo
+							CComObject<CTouchInfo>* pTouchInfo;
+							CComObject<CTouchInfo>::CreateInstance(&pTouchInfo);
+							pTouchInfo->Init(pInputs[l]);
+							pTouchInfo->QueryInterface(IID_ITouchInfo, (void**)&vOut.pdispVal);
+
+							HRESULT hr = SafeArrayPutElement(pSA, &l, &vOut);
+
+							if (FAILED(hr)) {
+								pTouchInfo->Release();
+								VariantClear(&vOut);
+								SafeArrayDestroy(pSA); // does a deep destroy of source VARIANT
+
+								// Error handling the touch information, fallback to system handling
+								delete[] pInputs;
+								return FALSE;
+							}
+
+							VariantClear(&vOut);
+						}
+					}
+
+					// Send information to script
+					SD_SCRIPTABLE_EVENT se;
+					se.cbSize = sizeof(SD_SCRIPTABLE_EVENT);
+					se.flags = 0;
+					lstrcpy(se.szEventName, PLUGIN_PREFIX "OnTouch");
+
+					// Message parameters
+					memset(&se.dp, 0, sizeof(DISPPARAMS));
+					se.dp.cArgs = 1;
+					VARIANT* lpvt = (VARIANT*)malloc(sizeof(VARIANT));
+					VariantInit(&lpvt[0]);
+					lpvt[0].vt = VT_ARRAY | VT_VARIANT;    // Store SafeArray as VARIANT
+					lpvt[0].parray = pSA;
+
+					se.dp.rgvarg = lpvt;
+
+					SDHostMessage(SD_SCRIPTABLE_PLUGIN_EVENT, objID, (DWORD) &se);
+
+					free(se.dp.rgvarg);
+
+					// Cleanup
+					delete[] pInputs;
+					CloseTouchInputHandle((HTOUCHINPUT)msg->lParam);
+
+					// We handled the message, return 0 to the window procedure
+					param2 = 0;
+					return TRUE;
+				}
+
+				case WM_GESTURE:
+				{
+					if (!pSystemEx->config->enableMultiTouch)
+						return FALSE;
+
+					// Get gesture information
+					GESTUREINFO info;
+					ZeroMemory(&info, sizeof(GESTUREINFO));
+
+					if (!GetGestureInfo((HGESTUREINFO)msg->lParam, &info))
+						return FALSE;
+
+					// Process gesture
+					CComObject<CGestureInfo>* pGestureInfo;
+					CComObject<CGestureInfo>::CreateInstance(&pGestureInfo);
+					pGestureInfo->Init(info);
+
+					// Send information to script
+					SD_SCRIPTABLE_EVENT se;
+					se.cbSize = sizeof(SD_SCRIPTABLE_EVENT);
+					se.flags = 0;
+					lstrcpy(se.szEventName, PLUGIN_PREFIX "OnTouch");
+
+					// Message parameters
+					memset(&se.dp, 0, sizeof(DISPPARAMS));
+					se.dp.cArgs = 1;
+					VARIANT* lpvt = (VARIANT*)malloc(sizeof(VARIANT));
+					VariantInit(&lpvt[0]);
+					lpvt[0].vt = VT_VARIANT;    // Store as VARIANT
+					pGestureInfo->QueryInterface(IID_IGestureInfo, (void**)&lpvt[0].pdispVal);
+
+					se.dp.rgvarg = lpvt;
+
+					SDHostMessage(SD_SCRIPTABLE_PLUGIN_EVENT, objID, (DWORD) &se);
+
+					free(se.dp.rgvarg);
+
+					// Cleanup
+					CloseGestureInfoHandle((HGESTUREINFO)msg->lParam);
+
+					// We handled the message, return 0 to the window procedure
+					param2 = 0;
 					return TRUE;
 				}
 			}
