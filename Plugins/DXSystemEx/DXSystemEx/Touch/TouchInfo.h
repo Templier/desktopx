@@ -45,7 +45,7 @@ class ATL_NO_VTABLE CTouchInfo :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CTouchInfo, &CLSID_TouchInfo>,
 	public IDispatchImpl<ITouchInfo, &IID_ITouchInfo, &LIBID_DXSystemExLib, /*wMajor =*/ 1, /*wMinor =*/ 0>,
-    public ISupportErrorInfo
+	public ISupportErrorInfo
 {
 public:
 	CTouchInfo() {
@@ -68,19 +68,32 @@ DECLARE_NOT_AGGREGATABLE(CTouchInfo)
 
 BEGIN_COM_MAP(CTouchInfo)
 	COM_INTERFACE_ENTRY(ITouchInfo)
-    COM_INTERFACE_ENTRY(ISupportErrorInfo)
+	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IDispatch)
 END_COM_MAP()
 
 	private:
+		TOUCHINPUT _input;
 
 	public:
-		void Init(TOUCHINPUT input);
+		void Init(TOUCHINPUT input) { _input = input; }
 
 		//////////////////////////////////////////////////////////////////////////
 		// ISupportErrorInfo
 		//////////////////////////////////////////////////////////////////////////
 		STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+
+		//////////////////////////////////////////////////////////////////////////
+		// ITouchInfo
+		//////////////////////////////////////////////////////////////////////////
+		STDMETHOD(get_X)(long* x);
+		STDMETHOD(get_Y)(long* y);
+		STDMETHOD(get_Id)(int* id);
+		STDMETHOD(get_Time)(int* time);
+		STDMETHOD(get_Width)(long* width);
+		STDMETHOD(get_Height)(long* height);
+
+		STDMETHOD(HasFlag)(int flagId, VARIANT_BOOL* hasFlag);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(TouchInfo), CTouchInfo)

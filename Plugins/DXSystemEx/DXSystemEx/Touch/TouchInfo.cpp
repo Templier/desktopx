@@ -32,11 +32,6 @@
 #include "stdafx.h"
 #include "TouchInfo.h"
 
-void CTouchInfo::Init(TOUCHINPUT input)
-{
-	// TODO
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ISupportErrorInfo
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,4 +48,69 @@ STDMETHODIMP CTouchInfo::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ITouchInfo
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+STDMETHODIMP CTouchInfo::get_X(long* x)
+{
+	*x = _input.x;
+
+	return S_OK;
+}
+
+STDMETHODIMP CTouchInfo::get_Y(long* y)
+{
+	*y = _input.y;
+
+	return S_OK;
+}
+
+STDMETHODIMP CTouchInfo::get_Id(int* id)
+{
+	*id = _input.dwID;
+
+	return S_OK;
+}
+
+STDMETHODIMP CTouchInfo::get_Time(int* time)
+{
+	if (_input.dwMask & TOUCHINPUTMASKF_TIMEFROMSYSTEM)
+		*time = _input.dwTime;
+	else
+		*time = -1;
+
+	return S_OK;
+}
+
+STDMETHODIMP CTouchInfo::HasFlag(int flagId, VARIANT_BOOL* hasFlag)
+{
+	if (_input.dwFlags & flagId)
+		*hasFlag = VARIANT_TRUE;
+	else
+		*hasFlag = VARIANT_FALSE;
+
+	return S_OK;
+}
+
+STDMETHODIMP CTouchInfo::get_Width(long* width)
+{
+	if (_input.dwMask & TOUCHINPUTMASKF_CONTACTAREA)
+		*width = _input.cxContact;
+	else
+		*width = -1;
+
+	return S_OK;
+}
+
+STDMETHODIMP CTouchInfo::get_Height(long* height)
+{
+	if (_input.dwMask & TOUCHINPUTMASKF_CONTACTAREA)
+		*height = _input.cyContact;
+	else
+		*height = -1;
+
+	return S_OK;
 }

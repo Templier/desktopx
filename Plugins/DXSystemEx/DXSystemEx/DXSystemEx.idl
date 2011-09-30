@@ -49,6 +49,17 @@ interface ITouchInfo : IDispatch{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Properties
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	[propget, id(1), helpstring("The x-coordinate (horizontal point) of the touch input, in hundredths of a pixel of physical screen coordinates")] HRESULT X([out, retval] long* x);
+	[propget, id(2), helpstring("The y-coordinate (vertical point) of the touch input, in hundredths of a pixel of physical screen coordinates")] HRESULT Y([out, retval] long* y);
+	[propget, id(3), helpstring("A touch point identifier that distinguishes a particular touch input")] HRESULT Id([out, retval] int* id);
+	[propget, id(4), helpstring("The time stamp for the event, in milliseconds. Will be -1 if not available")] HRESULT Time([out, retval] int* time);	
+	[propget, id(5), helpstring("The width of the touch contact area in hundredths of a pixel in physical screen coordinates. Will be -1 if not available")] HRESULT Width([out, retval] long* width);
+	[propget, id(6), helpstring("The height of the touch contact area in hundredths of a pixel in physical screen coordinates. Will be -1 if not available")] HRESULT Height([out, retval] long* height);
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Methods
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	[id(7), helpstring("Check if a flag describing the touch point is set")] HRESULT HasFlag([in] int flagId, [out, retval] VARIANT_BOOL* hasFlag);
 };
 
 [
