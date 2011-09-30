@@ -35,6 +35,18 @@ interface IGestureInfo : IDispatch{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Properties
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	[propget, id(1), helpstring("The identifier of the gesture command")] HRESULT Id([out, retval] int* id);
+	[propget, id(2), helpstring("The x coordinate associated with the gesture (relative to the current window)")] HRESULT X([out, retval] int* x);
+	[propget, id(3), helpstring("The y coordinate associated with the gesture (relative to the current window)")] HRESULT Y([out, retval] int* y);
+	[propget, id(4), helpstring("The distance (gesture-dependant)")] HRESULT Distance([out, retval] int* distance);
+	[propget, id(5), helpstring("The angle (gesture-dependant)")] HRESULT Angle([out, retval] int* angle);
+	[propget, id(6), helpstring("The second x coordinate (can be inertia or a delta depending on the gesture)")] HRESULT X1([out, retval] int* x);
+	[propget, id(7), helpstring("The second y coordinate (can be inertia or a delta depending on the gesture)")] HRESULT Y1([out, retval] int* y);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Methods
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	[id(8), helpstring("Check if a flag describing the gesture is set")] HRESULT HasFlag([in] int flagId, [out, retval] VARIANT_BOOL* hasFlag);
 };
 
 [

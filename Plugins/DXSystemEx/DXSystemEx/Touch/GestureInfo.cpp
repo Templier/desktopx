@@ -32,11 +32,76 @@
 #include "stdafx.h"
 #include "GestureInfo.h"
 
-void CGestureInfo::Init(GESTUREINFO info)
+#include <intsafe.h>
+
+void CGestureInfo::Init(HWND hwnd, GESTUREINFO info)
 {
-	// TODO
+	// Id
+	_id = info.dwID;
+
+	// Location
+	POINTS pt = localizePoint(hwnd, info.ptsLocation);
+	_x = pt.x;
+	_y = pt.y;
+
+	// Flags
+	_flags = info.dwFlags;
+
+	// Gesture-specific data
+	switch (_id)
+	{
+	default:
+		// Unrecognized gesture
+		break;
+
+	case GID_ZOOM:
+	case GID_TWOFINGERTAP:
+		_distance = LODWORD(info.ullArguments);
+		break;
+
+	case GID_PAN:
+		_distance = LODWORD(info.ullArguments);
+
+		// Handle inertia
+		if (_flags & GF_INERTIA) {
+			DWORD vec = HIDWORD(info.ullArguments);
+			POINTS inertia = MAKEPOINTS(vec);
+			_x1 = inertia.x;
+			_y1 = inertia.y;
+		}
+		break;
+
+	case GID_ROTATE:
+		_angle = (int)GID_ROTATE_ANGLE_FROM_ARGUMENT(info.ullArguments);
+		break;
+
+	case GID_PRESSANDTAP:
+		if (info.ullArguments > 0) {
+			POINTS pts = MAKEPOINTS(info.ullArguments);
+			POINT delta;
+			POINTSTOPOINT(delta, pts);
+
+			_x1 = delta.x;
+			_y1 = delta.y;
+		}
+		break;
+	}
 }
 
+POINTS CGestureInfo::localizePoint(HWND hwnd, const POINTS& pt)
+{
+	POINT point;
+	point.x = pt.x;
+	point.y = pt.y;
+
+	ScreenToClient(hwnd, &point);
+
+	POINTS pts;
+	pts.x = (SHORT)point.x;
+	pts.y = (SHORT)point.y;
+
+	return pts;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ISupportErrorInfo
@@ -54,4 +119,63 @@ STDMETHODIMP CGestureInfo::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IGestureInfo
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+STDMETHODIMP CGestureInfo::get_Id(int* id)
+{
+	*id = _id;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::get_X(int* x)
+{
+	*x = _x;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::get_Y(int* y)
+{
+	*y = _y;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::get_Distance(int* distance)
+{
+	*distance = _distance;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::get_Angle(int* angle)
+{
+	*angle = _angle;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::get_X1(int* x1)
+{
+	*x1 = _x1;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::get_Y1(int* y1)
+{
+	*y1 = _y1;
+
+	return S_OK;
+}
+
+STDMETHODIMP CGestureInfo::HasFlag(int id, VARIANT_BOOL* hasFlag)
+{
+	*hasFlag = (_flags & id) ? VARIANT_TRUE : VARIANT_FALSE;
+
+	return S_OK;
 }

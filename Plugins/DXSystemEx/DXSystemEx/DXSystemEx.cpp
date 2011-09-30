@@ -665,7 +665,7 @@ label_expiration:
 					// Process gesture
 					CComObject<CGestureInfo>* pGestureInfo;
 					CComObject<CGestureInfo>::CreateInstance(&pGestureInfo);
-					pGestureInfo->Init(info);
+					pGestureInfo->Init(msg->hwnd, info);
 
 					// Send information to script
 					SD_SCRIPTABLE_EVENT se;

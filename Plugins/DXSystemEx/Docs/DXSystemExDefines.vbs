@@ -102,7 +102,9 @@ Const TOUCHEVENT_PRIMARY                = 16
 Const TOUCHEVENT_NOCOALESCE             = 32
 Const TOUCHEVENT_PALM                   = 128
 
-
-
-
-
+' See http://msdn.microsoft.com/en-us/library/dd353232(v=VS.85).aspx
+Const GESTURE_ZOOM                      = 3
+Const GESTURE_PAN                       = 4
+Const GESTURE_ROTATE                    = 5
+Const GESTURE_TWOFINGERTA               = 6
+Const GESTURE_PRESSANDTAP               = 7

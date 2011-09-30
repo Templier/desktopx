@@ -45,10 +45,11 @@ class ATL_NO_VTABLE CGestureInfo :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CGestureInfo, &CLSID_GestureInfo>,
 	public IDispatchImpl<IGestureInfo, &IID_IGestureInfo, &LIBID_DXSystemExLib, /*wMajor =*/ 1, /*wMinor =*/ 0>,
-    public ISupportErrorInfo
+	public ISupportErrorInfo
 {
 public:
-	CGestureInfo() {
+	CGestureInfo() : _id(0), _x(0), _y(0), _distance(0), _angle(0), _flags(0), _x1(0), _y1(0)
+	{
 	}
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -68,19 +69,43 @@ DECLARE_NOT_AGGREGATABLE(CGestureInfo)
 
 BEGIN_COM_MAP(CGestureInfo)
 	COM_INTERFACE_ENTRY(IGestureInfo)
-    COM_INTERFACE_ENTRY(ISupportErrorInfo)
+	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IDispatch)
 END_COM_MAP()
 
 	private:
+		int  _id;
+		int  _x;
+		int  _y;
+		int  _distance;
+		int  _angle;
+		int  _flags;
+		int  _x1;
+		int  _y1;
+
+		POINTS localizePoint(HWND hwnd, const POINTS &pt);
 
 	public:
-		void Init(GESTUREINFO info);
+		void Init(HWND hwnd, GESTUREINFO info);
 
 		//////////////////////////////////////////////////////////////////////////
 		// ISupportErrorInfo
 		//////////////////////////////////////////////////////////////////////////
 		STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+
+		//////////////////////////////////////////////////////////////////////////
+		// IGestureInfo
+		//////////////////////////////////////////////////////////////////////////
+		STDMETHOD(get_Id)(int* id);
+		STDMETHOD(get_X)(int* x);
+		STDMETHOD(get_Y)(int* y);
+		STDMETHOD(get_Distance)(int* distance);
+		STDMETHOD(get_Angle)(int* angle);
+		STDMETHOD(get_X1)(int* x1);
+		STDMETHOD(get_Y1)(int* y1);
+
+		STDMETHOD(HasFlag)(int id, VARIANT_BOOL* hasFlag);
+
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(GestureInfo), CGestureInfo)

@@ -48,7 +48,9 @@ class ATL_NO_VTABLE CTouchInfo :
 	public ISupportErrorInfo
 {
 public:
-	CTouchInfo() {
+	CTouchInfo()
+	{
+		ZeroMemory(&_input, sizeof(GESTUREINFO));
 	}
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()

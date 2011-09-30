@@ -128,18 +128,18 @@ Callbacks
    - Y
    - Distance
    - Angle
-   - HasInertia
    - X1
    - X2
+   - HasFlag(id)
 
   TouchInfo object:
    - X
    - Y
    - Id
    - Time
-   - hasFlag(id)
    - Width
    - Height
+   - hasFlag(id)
 
 ------
 Volume
