@@ -60,12 +60,12 @@ Const ERR_TYPE_MISMATCH                 = 17
 Const SIGNATURE_SHA1                    = 0
 
 '=============================================
-'= Archive (1.1 only)
+'= Archive (1.2 only)
 '=============================================
 Const ARCHIVE_ZIP                       = 1
 
 '=============================================
-'= Download (1.1 only)
+'= Download (1.2 only)
 '=============================================
 Const DOWNLOAD_OK                       = 0
 Const DOWNLOAD_CANCELLED                = 1
@@ -89,3 +89,20 @@ Const DOWNLOAD_CONNECTIONOPENFAILED     = 101
 Const DOWNLOAD_REQUESTOPENFAILED        = 102
 Const DOWNLOAD_REQUESTSENDFAILED        = 103
 Const DOWNLOAD_QUERYHEADERSFAILED       = 104
+
+'=============================================
+'= Touch (1.2 only)
+'=============================================
+' See http://msdn.microsoft.com/en-us/library/dd317334(v=VS.85).aspx
+Const TOUCHEVENT_MOVE                   = 1
+Const TOUCHEVENT_DOWN                   = 2
+Const TOUCHEVENT_UP                     = 4
+Const TOUCHEVENT_INRANGE                = 8
+Const TOUCHEVENT_PRIMARY                = 16
+Const TOUCHEVENT_NOCOALESCE             = 32
+Const TOUCHEVENT_PALM                   = 128
+
+
+
+
+

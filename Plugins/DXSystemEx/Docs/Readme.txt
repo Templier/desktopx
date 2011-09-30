@@ -23,7 +23,7 @@ Full source code is available here: http://code.google.com/p/threeoaks/
 -------
 Archive
 -------
-(WIP - only handles zip and does not have any progress callbacks)
+(only handles zip and does not have any progress callbacks)
 
 Properties & Methods
 	- GetArchive()
@@ -55,12 +55,15 @@ Properties & Methods
 Download
 --------
 Properties & Methods
-	- StartDownload(id, remoteUrl, localPath)
+	- StartDownload(remoteUrl, localPath)
 	- StopDownload(id)
+	- LoadPage(remoteUrl, arguments)
 
 Callbacks
 	- SystemEx_OnDownloadFinish(id, status, localPath)
 	- SystemEx_OnDownloadProgress(id, completedSize, totalSize)
+	- SystemEx_OnLoadPageFinish(id, status, data)
+	- SystemEx_OnLoadPageProgress(id, completedSize, totalSize)
 
 -----------
 Drag & Drop
@@ -109,8 +112,34 @@ Callbacks:
 Signature
 ---------
 Properties & Methods
-	- VerifySignature(path, signature, type)
-	- GetSignature(path, type)
+	- VerifyHash(path, hash, type)
+	- GetHash(path, type)
+
+-----
+Touch
+-----
+Callbacks
+	- SystemEx_OnGesture(info)
+	- SystemEx_OnTouch(events)
+
+  GestureInfo object:
+   - Id
+   - X
+   - Y
+   - Distance
+   - Angle
+   - HasInertia
+   - X1
+   - X2
+
+  TouchInfo object:
+   - X
+   - Y
+   - Id
+   - Time
+   - hasFlag(id)
+   - Width
+   - Height
 
 ------
 Volume
@@ -203,7 +232,6 @@ SystemEx.StopDownload(id)
 
 Stop a specific download
 
-
 SystemEx_OnDownloadFinish(id, status, localPath)
 ------------------------------------------------
 
@@ -215,6 +243,22 @@ SystemEx_OnDownloadProgress(id, completedSize, totalSize)
 
 Received on download progress
 
+SystemEx.LoadPage(remoteUrl, parameters)
+----------------------
+
+Load a page, with request arguments
+
+SystemEx_OnLoadPageFinish(id, status, data)
+------------------------------------------------
+
+Received when a LoadPage call has ended. See the list of status codes for more information
+The contents of the page are passed in the data argument.
+
+
+SystemEx_OnLoadPageProgress(id, completedSize, totalSize)
+---------------------------------------------------------
+
+Received on loadpage progress
 
 
 =======================================================================================================
@@ -327,20 +371,37 @@ parameters.
 == Signature
 =======================================================================================================
 
-Note: The only type of signature supported at this time is SIGNATURE_SHA1
+Note: The only type of hash function supported at this time is SIGNATURE_SHA1
 
 
-SystemEx.VerifySignature(path, signature, type)
+SystemEx.VerifyHash(path, hash, type)
 -----------------------------------------------
 
 Check the signature of the file pointed to by path.
 
 
-SystemEx.GetSignature(path, type)
+SystemEx.GetHash(path, type)
 ---------------------------------
 
-Get the signature of the file pointed to by path.
+Get the hash of the file pointed to by path.
 
+
+=======================================================================================================
+== Touch
+=======================================================================================================
+
+SystemEx_OnGesture(info)
+------------------------
+
+Receive a GestureInfo object with information about the gesture.
+
+Note: For the Press and Tap and Pan gestures, (X1, Y1) contain the delta between the two fingers and the
+      inertia (if available) respectively
+
+SystemEx_OnTouch(events)
+------------------------
+
+Receive an array of TouchInfo objects when a touch event happens
 
 
 =======================================================================================================
@@ -411,11 +472,14 @@ XP Compatibility: might not work with some cards, in which case it will always
 ** Changelog
 *******************************************************************************************************
 
-Version 1.0 Build xxx:
+Version 1.2 Build xxx:
+  + Added Touch/Gesture handling
+  + Add hash/signature verification functions
   + Added Zip/Unzip functions
   + Added HTTP download functions (with progress information)
   + Added drag&drop handling (merged from DXDragDropExtended)
   + Added configuration UI to enable/disable some functions when they are not needed
+
 
 Version 1.0 Build 240:
   + Renamed to DXSystemEx (plugin namespace is now SystemEx)
@@ -424,7 +488,9 @@ Version 1.0 Build 240:
   + Added Master volume control / Mute / Peak (merged from DXVolumeControl)
   + Added Instance information (merged from DxInstance)
 
-Version 1.0 Build 204: First released version
+
+Version 1.0 Build 204:
+  First released version
 
 *******************************************************************************************************
 ** License
