@@ -168,13 +168,13 @@ END_CONNECTION_POINT_MAP()
 			bool enableDnD;
 			bool enableMonitors;
 			bool enableInstance;
-			bool enableMultiTouch;
+			bool captureTouch;
 
 			Config() {
 				enableDnD = false;
 				enableMonitors = true;
 				enableInstance = false;
-				enableMultiTouch = false;
+				captureTouch = false;
 			}
 		};
 

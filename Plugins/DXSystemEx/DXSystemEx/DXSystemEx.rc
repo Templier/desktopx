@@ -110,7 +110,8 @@ BEGIN
     LTEXT           "",IDC_BETA,95,41,100,8
     CONTROL         "Enable single instance",IDC_INSTANCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,69,185,10
     CONTROL         "Enable monitor information",IDC_MONITORS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,85,185,10
-    CONTROL         "Enable multitouch support",IDC_MULTITOUCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,101,185,10
+    CONTROL         "Capture touch events (instead of gestures)",IDC_MULTITOUCH,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,101,185,10
 END
 
 
