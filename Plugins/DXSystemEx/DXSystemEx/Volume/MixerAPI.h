@@ -2,17 +2,13 @@
 //
 // MixerAPI (CAlexfMixer) - simple mixer control wrapper
 //
-// Copyright (c)1999, Alexander Fedorov 
+// Copyright (c)1999, Alexander Fedorov
 // You may do whatever you want with this code, as long as you include this
 // copyright notice in your implementation files.
 // If you wish to add new classes to this collection, feel free to do so.
 // But please send me your code so that I can update the collection.
 // Comments and bug reports: lamer2000@usa.net
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once

@@ -7,18 +7,14 @@
 // All rights reserved.
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
-///////////////////////////////////////////////////////////////////////////////////////////////
-// 
+//
 // Copyright / Usage Details:
 //
-// You are allowed to include the source code in any product (commercial, shareware, freeware or otherwise) 
-// when your product is released in binary form. You are allowed to modify the source code in any way you want 
-// except you cannot modify the copyright details at the top of each module. If you want to distribute source 
-// code with your application, then you are only allowed to distribute versions released by the author. This is 
-// to maintain a single distribution point for the source code. 
+// You are allowed to include the source code in any product (commercial, shareware, freeware or otherwise)
+// when your product is released in binary form. You are allowed to modify the source code in any way you want
+// except you cannot modify the copyright details at the top of each module. If you want to distribute source
+// code with your application, then you are only allowed to distribute versions released by the author. This is
+// to maintain a single distribution point for the source code.
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,11 +66,11 @@ class CSingleInstance
 {
 
 private:
-	// Mutexes & Lock	
+	// Mutexes & Lock
 	DWORD  m_mutexWait;
 	HANDLE m_hExecuteLock;
 	HANDLE m_hInstanceDataMutex;
-	
+
 	// Data
 	string m_name;	// used for the memory mapped file & mutexes
 	string m_mmfilename;
@@ -86,7 +82,7 @@ private:
 	///////////////////////////////////////////////////////////////////////////////
 	// LPTSTR CreateUniqueName( pszGUID, pszBuffer, nMode )
 	//
-	// Creates a "unique" name, where the meaning of "unique" depends on the nMode 
+	// Creates a "unique" name, where the meaning of "unique" depends on the nMode
 	// flag values. Returns pszBuffer
 	//
 	// pszGUID:		Copied to the beginning of pszBuffer, should be an GUID
@@ -103,9 +99,9 @@ private:
 	//														  must also reside on a different desktop
 	//				SI_TRUSTEE_UNIQUE | SI_DESKTOP_UNIQUE	- Allow one instance per user account,
 	//														  instances in login sessions running a
-	//														  different user account must also reside	
+	//														  different user account must also reside
 	//														  on different desktops.
-	//				SI_SYSTEM_UNIQUE						- Allow only one instance on the whole system	
+	//				SI_SYSTEM_UNIQUE						- Allow only one instance on the whole system
 	//
 	char* CreateUniqueName(const char* pszGUID, char* pszBuffer, int nMode /* = SI_DESKTOP_UNIQUE */);
 

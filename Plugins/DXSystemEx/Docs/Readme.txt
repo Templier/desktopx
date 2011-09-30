@@ -1,5 +1,5 @@
 DXSystemEx plugin for DesktopX
- Copyright (c) 2009-2010 Julien Templier
+ Copyright (c) 2009-2011 Julien Templier
 -------------------------------------------------------------------------------------------------------
 
 The DXSystemEx plugin is a scripting plugin that exposes extended system information to DesktopX plugins

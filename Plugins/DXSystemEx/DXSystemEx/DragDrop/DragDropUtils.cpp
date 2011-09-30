@@ -2,15 +2,11 @@
 //
 // DXSystemEx - Extended System Information
 //
-// Copyright (c) 2009-2010, Julien Templier
+// Copyright (c) 2009-2011, Julien Templier
 // All rights reserved.
 //
 // Based on Tutorial by J. Brown / www.catch22.net
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -93,11 +89,11 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 
 			memset(&se.dp, 0, sizeof(DISPPARAMS));
 
-			USES_CONVERSION;	
+			USES_CONVERSION;
 
 			se.dp.cArgs = 1;
 			VARIANT* lpvt = (VARIANT*)malloc(sizeof(VARIANT)*1);
-			VariantInit(&lpvt[0]);							
+			VariantInit(&lpvt[0]);
 			lpvt[0].vt = VT_BSTR;
 			lpvt[0].bstrVal = SysAllocString((OLECHAR*) T2OLE((char*)data));
 
@@ -141,12 +137,12 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 			pSA = SafeArrayCreate(VT_VARIANT, 1, aDim);
 
 			if (pSA == NULL)
-				goto cleanup;			
-			
+				goto cleanup;
+
 			for (UINT uFile = 0; uFile < uNumFiles; uFile++) {
 
 				// Get the next filename from the HDROP info.
-				if ( DragQueryFile(hdrop, uFile, szNextFile, MAX_PATH) > 0 ) {	
+				if ( DragQueryFile(hdrop, uFile, szNextFile, MAX_PATH) > 0 ) {
 
 					if (uFile > 0)
 						data.append("|");
@@ -162,13 +158,13 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 						SafeArrayDestroy(pSA); // does a deep destroy
 						goto cleanup;
 					}
-				}				
+				}
 			}
 
-			// We implement both the default Object_OnDropFiles callback and the DXSystemEx-specific version			
+			// We implement both the default Object_OnDropFiles callback and the DXSystemEx-specific version
 
 			// Default DX callback
-			{			
+			{
 			SD_SCRIPTABLE_EVENT se;
 			se.cbSize = sizeof(SD_SCRIPTABLE_EVENT);
 			lstrcpy(se.szEventName, "Object_OnDropFiles");
@@ -179,7 +175,7 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 			USES_CONVERSION;
 			se.dp.cArgs = 1;
 			VARIANT* lpvt = (VARIANT*)malloc(sizeof(VARIANT)*1);
-			VariantInit(&lpvt[0]);							
+			VariantInit(&lpvt[0]);
 			lpvt[0].vt = VT_BSTR;
 			lpvt[0].bstrVal = SysAllocString((OLECHAR*) T2OLE(data.c_str()));
 
@@ -190,7 +186,7 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 			}
 
 			// DXSystemEx callback
-			{			
+			{
 			SD_SCRIPTABLE_EVENT se;
 			se.cbSize = sizeof(SD_SCRIPTABLE_EVENT);
 			lstrcpy(se.szEventName, PLUGIN_PREFIX "OnDropFiles");
@@ -201,7 +197,7 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 			USES_CONVERSION;
 			se.dp.cArgs = 1;
 			VARIANT* lpvt = (VARIANT*)malloc(sizeof(VARIANT)*1);
-			VariantInit(&lpvt[0]);	
+			VariantInit(&lpvt[0]);
 			V_VT(&lpvt[0]) = VT_ARRAY | VT_VARIANT;
 			V_ARRAY(&lpvt[0])= pSA;
 
@@ -211,7 +207,7 @@ void DropData(DWORD objID, IDataObject *pDataObject)
 			free(se.dp.rgvarg);
 			}
 
-cleanup:		
+cleanup:
 			GlobalUnlock(stgmed.hGlobal);
 
 			// release the data using the COM API

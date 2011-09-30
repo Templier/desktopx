@@ -2,13 +2,9 @@
 //
 // DXSystemEx - Extended System Information
 //
-// Copyright (c) 2009-2010, Julien Templier
+// Copyright (c) 2009-2011, Julien Templier
 // All rights reserved.
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -64,7 +60,7 @@ class ATL_NO_VTABLE CArchive :
     public ISupportErrorInfo
 {
 	public:
-	CArchive() {		
+	CArchive() {
 	}
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -148,18 +144,18 @@ END_COM_MAP()
 		STDMETHOD(get_Count)(long *count);
 		STDMETHOD(get_Items)(VARIANT* items);
 		STDMETHOD(get_Type)(int* type);
-		STDMETHOD(get_SupportedExtensions)(VARIANT* extensions);		
+		STDMETHOD(get_SupportedExtensions)(VARIANT* extensions);
 
 		// Methods
 		STDMETHOD(Create)(BSTR filePath, int type, VARIANT_BOOL *status);
 		STDMETHOD(Open)(BSTR filePath, VARIANT_BOOL *status);
 		STDMETHOD(ExistsFile)(BSTR filename, VARIANT_BOOL* status);
-		STDMETHOD(AddFile)(BSTR filename, VARIANT_BOOL* status);	
+		STDMETHOD(AddFile)(BSTR filename, VARIANT_BOOL* status);
 		STDMETHOD(ExtractFile)(BSTR filename, BSTR outputPath, VARIANT_BOOL* status);
 		STDMETHOD(Extract)(BSTR outputDirectory, VARIANT_BOOL *status);
 		STDMETHOD(Close)();
-				
-		STDMETHOD(IsArchive)(BSTR filename, VARIANT_BOOL *status);		
+
+		STDMETHOD(IsArchive)(BSTR filename, VARIANT_BOOL *status);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Archive), CArchive)

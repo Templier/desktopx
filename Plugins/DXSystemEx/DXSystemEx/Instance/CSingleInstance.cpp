@@ -7,18 +7,14 @@
 // All rights reserved.
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
-///////////////////////////////////////////////////////////////////////////////////////////////
-// 
+//
 // Copyright / Usage Details:
 //
-// You are allowed to include the source code in any product (commercial, shareware, freeware or otherwise) 
-// when your product is released in binary form. You are allowed to modify the source code in any way you want 
-// except you cannot modify the copyright details at the top of each module. If you want to distribute source 
-// code with your application, then you are only allowed to distribute versions released by the author. This is 
-// to maintain a single distribution point for the source code. 
+// You are allowed to include the source code in any product (commercial, shareware, freeware or otherwise)
+// when your product is released in binary form. You are allowed to modify the source code in any way you want
+// except you cannot modify the copyright details at the top of each module. If you want to distribute source
+// code with your application, then you are only allowed to distribute versions released by the author. This is
+// to maintain a single distribution point for the source code.
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +57,7 @@ void CSingleInstance::ActivateInstance()
 {
 	_ASSERT(m_hExecuteLock == NULL);
 
-	// Ensure there is only ever one CSingleInstance instance 
+	// Ensure there is only ever one CSingleInstance instance
 	// active at any one time throughout the system
 	m_hExecuteLock = CreateMutex(NULL, false, "CSingleInstanceExecuteMutex");
 	m_mutexWait = WaitForSingleObject(m_hExecuteLock, INFINITE);
@@ -124,13 +120,13 @@ bool CSingleInstance::CreateFirstInstanceData(HWND hwnd)
 																					   0,
 																					   size));
 	// Opening the MMF should work
-	_ASSERT(pInstanceData != NULL);   
+	_ASSERT(pInstanceData != NULL);
 
 	// Lock the data prior to updating it
-	DWORD dwWaitMutex = WaitForSingleObject(m_hInstanceDataMutex, INFINITE);	
-	switch (dwWaitMutex) 
+	DWORD dwWaitMutex = WaitForSingleObject(m_hInstanceDataMutex, INFINITE);
+	switch (dwWaitMutex)
 	{
-		case WAIT_OBJECT_0: 			
+		case WAIT_OBJECT_0:
 			pInstanceData->hwnd = hwnd;
 			UnmapViewOfFile(pInstanceData);
 
@@ -141,7 +137,7 @@ bool CSingleInstance::CreateFirstInstanceData(HWND hwnd)
 			break;
 	}
 
-	// Since this will be the last function that will be called 
+	// Since this will be the last function that will be called
 	// when this is the first instance we can release the lock
 	ReleaseLock();
 
@@ -172,10 +168,10 @@ bool CSingleInstance::NotifyFirstInstance(HWND hwndSender, LPCTSTR commandLine)
 		return false;
 
 	// Lock the data prior to reading from it
-	DWORD dwWaitMutex = WaitForSingleObject(m_hInstanceDataMutex, INFINITE);	
-	switch (dwWaitMutex) 
+	DWORD dwWaitMutex = WaitForSingleObject(m_hInstanceDataMutex, INFINITE);
+	switch (dwWaitMutex)
 	{
-		case WAIT_OBJECT_0: 
+		case WAIT_OBJECT_0:
 		{
 			_ASSERT(pInstanceData->hwnd); // Something gone wrong with the MMF
 
@@ -188,19 +184,19 @@ bool CSingleInstance::NotifyFirstInstance(HWND hwndSender, LPCTSTR commandLine)
 				SetForegroundWindow(hWindow);
 
 				if (commandLine)
-				{  
+				{
 					// Send the current instance command line to the previous instance using WM_COPYDATA
 					COPYDATASTRUCT cds;
 					cds.dwData = NULL;
 					DWORD dwCmdLength = static_cast<DWORD>(_tcslen(commandLine) + 1);
-					cds.cbData = dwCmdLength * sizeof(TCHAR); 
+					cds.cbData = dwCmdLength * sizeof(TCHAR);
 
 					// We use a local buffer so that we can specify a constant parameter to this function
-					TCHAR* pszLocalCmdLine = new TCHAR[dwCmdLength]; 
+					TCHAR* pszLocalCmdLine = new TCHAR[dwCmdLength];
 					_tcscpy_s(pszLocalCmdLine, dwCmdLength, commandLine);
 					cds.lpData = pszLocalCmdLine;
 
-					// Send the message to the previous instance. Use SendMessageTimeout instead of SendMessage to ensure we 
+					// Send the message to the previous instance. Use SendMessageTimeout instead of SendMessage to ensure we
 					// do not hang if the previous instance itself is hung
 					DWORD_PTR dwResult = 0;
 					if (SendMessageTimeout(hWindow,
@@ -257,7 +253,7 @@ char* CSingleInstance::CreateUniqueName(const char* pszGUID, char* pszBuffer, in
 		*pszBuffer = 0;
 
 	// Name should be desktop unique, so add current desktop name
-	if(nMode & SI_DESKTOP_UNIQUE) {		
+	if(nMode & SI_DESKTOP_UNIQUE) {
 		_tcscat_s(pszBuffer, MAX_PATH, _T("-"));
 		HDESK hDesk		= GetThreadDesktop(GetCurrentThreadId());
 		ULONG cchDesk	= MAX_PATH - (_tcslen(pszBuffer) + 1);
@@ -269,23 +265,23 @@ char* CSingleInstance::CreateUniqueName(const char* pszGUID, char* pszBuffer, in
 
 	// Name should be session unique, so add current session id
 	if(nMode & SI_SESSION_UNIQUE) {
-		
+
 		HANDLE hToken = NULL;
 
 		// Try to open the token (fails on Win9x) and check necessary buffer size
-		if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken) 
-		  && (MAX_PATH - _tcslen(pszBuffer) > 9 )) 
+		if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)
+		  && (MAX_PATH - _tcslen(pszBuffer) > 9 ))
 		{
 			DWORD cbBytes = 0;
 
-			if(!GetTokenInformation(hToken, TokenStatistics, NULL, cbBytes, &cbBytes) 
+			if(!GetTokenInformation(hToken, TokenStatistics, NULL, cbBytes, &cbBytes)
 			   && GetLastError() == ERROR_INSUFFICIENT_BUFFER )
 			{
 				PTOKEN_STATISTICS pTS = (PTOKEN_STATISTICS) _alloca( cbBytes );
 				if(GetTokenInformation(hToken, TokenStatistics, (LPVOID)pTS, cbBytes, &cbBytes)) {
-					wsprintf(pszBuffer + _tcslen(pszBuffer), 
-							 _T("-%08x%08x"), 
-							 pTS->AuthenticationId.HighPart, 
+					wsprintf(pszBuffer + _tcslen(pszBuffer),
+							 _T("-%08x%08x"),
+							 pTS->AuthenticationId.HighPart,
 							 pTS->AuthenticationId.LowPart);
 				}
 			}
@@ -294,7 +290,7 @@ char* CSingleInstance::CreateUniqueName(const char* pszGUID, char* pszBuffer, in
 
 	// Name should be unique to the current user
 	if(nMode & SI_TRUSTEE_UNIQUE) {
-		
+
 		TCHAR szUser[64] = {0};
 		TCHAR szDomain[64] = {0};
 		DWORD cchUser	= 64;

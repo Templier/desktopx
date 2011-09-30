@@ -69,12 +69,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Julien Templier"
             VALUE "FileDescription", "DesktopX plugin : Extended System Control"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.2.0.0"
             VALUE "InternalName", "DXSystemEx.dll"
-            VALUE "LegalCopyright", "(c) 2009-2010 Julien Templier.  All rights reserved."
+            VALUE "LegalCopyright", "(c) 2009-2011 Julien Templier.  All rights reserved."
             VALUE "OriginalFilename", "DXSystemEx.dll"
             VALUE "ProductName", "DXSystemEx"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "1.2.0.0"
         END
     END
     BLOCK "VarFileInfo"

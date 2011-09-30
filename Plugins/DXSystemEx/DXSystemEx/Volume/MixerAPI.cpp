@@ -2,17 +2,13 @@
 //
 // MixerAPI (CAlexfMixer) - simple mixer control wrapper
 //
-// Copyright (c)1999, Alexander Fedorov 
+// Copyright (c)1999, Alexander Fedorov
 // You may do whatever you want with this code, as long as you include this
 // copyright notice in your implementation files.
 // If you wish to add new classes to this collection, feel free to do so.
 // But please send me your code so that I can update the collection.
 // Comments and bug reports: lamer2000@usa.net
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -34,11 +30,11 @@ void MixerAPI::ZeroAll()
 MixerAPI::MixerAPI(DWORD DstType, DWORD SrcType, DWORD ControlType)
 {
 	ZeroAll();
-	if(mixerGetNumDevs() < 1) 
+	if(mixerGetNumDevs() < 1)
 		return;
 
 	mmr = mixerOpen(&m_HMixer, 0, 0, 0L, CALLBACK_NULL);
-	if (mmr != MMSYSERR_NOERROR) 
+	if (mmr != MMSYSERR_NOERROR)
 		return;
 
 	// get dwLineID
@@ -47,7 +43,7 @@ MixerAPI::MixerAPI(DWORD DstType, DWORD SrcType, DWORD ControlType)
 
 	// DstType
 	mxl.dwComponentType = DstType;
-	if (mixerGetLineInfo((HMIXEROBJ)m_HMixer, &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE) != MMSYSERR_NOERROR) 
+	if (mixerGetLineInfo((HMIXEROBJ)m_HMixer, &mxl, MIXER_OBJECTF_HMIXER | MIXER_GETLINEINFOF_COMPONENTTYPE) != MMSYSERR_NOERROR)
 		return;
 
 	// SrcType
@@ -60,10 +56,10 @@ MixerAPI::MixerAPI(DWORD DstType, DWORD SrcType, DWORD ControlType)
 			mxl.cbStruct = sizeof( MIXERLINE );
 			mxl.dwSource = j;
 			mxl.dwDestination = DstIndex;
-			if(mixerGetLineInfo( ( HMIXEROBJ )m_HMixer,	&mxl, MIXER_GETLINEINFOF_SOURCE ) != MMSYSERR_NOERROR) 
+			if(mixerGetLineInfo( ( HMIXEROBJ )m_HMixer,	&mxl, MIXER_GETLINEINFOF_SOURCE ) != MMSYSERR_NOERROR)
 				return;
 
-			if( mxl.dwComponentType == SrcType ) 
+			if( mxl.dwComponentType == SrcType )
 				break;
 		}
 	}
@@ -79,7 +75,7 @@ MixerAPI::MixerAPI(DWORD DstType, DWORD SrcType, DWORD ControlType)
 	mxlc.pamxctrl = &mxc;
 	if (mixerGetLineControls((HMIXEROBJ)m_HMixer, &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
 		return;
-	
+
 	m_iMixerControlID = mxc.dwControlID;
 	m_dwChannels = mxl.cChannels;
 	m_bSuccess = TRUE;
@@ -131,7 +127,7 @@ MixerAPI::MixerAPI(HWND hwnd, DWORD DstType, DWORD SrcType, DWORD ControlType)
 	mxlc.cControls = 1;
 	mxlc.cbmxctrl = sizeof(MIXERCONTROL);
 	mxlc.pamxctrl = &mxc;
-	if (mixerGetLineControls((HMIXEROBJ)m_HMixer, &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR) 
+	if (mixerGetLineControls((HMIXEROBJ)m_HMixer, &mxlc, MIXER_OBJECTF_HMIXER | MIXER_GETLINECONTROLSF_ONEBYTYPE) != MMSYSERR_NOERROR)
 		return;
 
 	m_iMixerControlID = mxc.dwControlID;
@@ -140,7 +136,7 @@ MixerAPI::MixerAPI(HWND hwnd, DWORD DstType, DWORD SrcType, DWORD ControlType)
 
 MixerAPI::~MixerAPI()
 {
-	if (m_HMixer) 
+	if (m_HMixer)
 		mixerClose(m_HMixer);
 }
 
@@ -160,7 +156,7 @@ MixerAPI::~MixerAPI()
 *******************************************************************************/
 DWORD MixerAPI::GetControlValue(DWORD **dwResults)
 {
-	if (!m_bSuccess) 
+	if (!m_bSuccess)
 		return 0;
 
 	m_bSuccess = FALSE;
@@ -207,7 +203,7 @@ DWORD MixerAPI::GetControlValue(DWORD **dwResults)
 *******************************************************************************/
 BOOL MixerAPI::GetMuteValue(LONG *dwResult)
 {
-	if (!m_bSuccess) 
+	if (!m_bSuccess)
 		return m_bSuccess;
 
 	m_bSuccess = FALSE;
@@ -222,7 +218,7 @@ BOOL MixerAPI::GetMuteValue(LONG *dwResult)
 	mxcd.paDetails = &mxcdMute;
 
 	mmr = mixerGetControlDetails((HMIXEROBJ)m_HMixer, &mxcd, 0L);
-	if (MMSYSERR_NOERROR != mmr) 
+	if (MMSYSERR_NOERROR != mmr)
 		return m_bSuccess;
 
 	m_bSuccess = TRUE;
@@ -248,7 +244,7 @@ BOOL MixerAPI::GetMuteValue(LONG *dwResult)
 *******************************************************************************/
 BOOL MixerAPI::SetControlValue(DWORD *dwData, DWORD dwDataLen)
 {
-	if (!m_bSuccess) 
+	if (!m_bSuccess)
 		return m_bSuccess;
 
 	if (dwDataLen > m_dwChannels)

@@ -2,15 +2,11 @@
 //
 // DXSystemEx - Extended System Information
 //
-// Copyright (c) 2009-2010, Julien Templier
+// Copyright (c) 2009-2011, Julien Templier
 // All rights reserved.
 //
 // Based on Tutorial by J. Brown / www.catch22.net
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Redistribution and use in source and binary forms, with or without modification, are

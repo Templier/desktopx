@@ -2,13 +2,9 @@
 '//
 '// DXSystemEx Defines
 '//
-'// Copyright (c) 2009, Julien TEMPLIER
+'// Copyright (c) 2009-2011, Julien TEMPLIER
 '// All rights reserved.
 '//
-'///////////////////////////////////////////////////////////////////////////////////////////////
-'// * $LastChangedRevision$
-'// * $LastChangedDate$
-'// * $LastChangedBy$
 '///////////////////////////////////////////////////////////////////////////////////////////////
 '//
 '// Redistribution and use in source and binary forms, with or without modification, are

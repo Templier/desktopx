@@ -2,15 +2,11 @@
 //
 // DXSystemEx - Extended System Information
 //
-// Copyright (c) 2009-2010, Julien Templier
+// Copyright (c) 2009-2011, Julien Templier
 // All rights reserved.
 //
 // Based on Tutorial by J. Brown / www.catch22.net
 //
-///////////////////////////////////////////////////////////////////////////////////////////////
-// * $LastChangedRevision$
-// * $LastChangedDate$
-// * $LastChangedBy$
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -114,7 +110,7 @@ HRESULT __stdcall CDropTarget::DragEnter(IDataObject * pDataObject, DWORD grfKey
 HRESULT __stdcall CDropTarget::DragOver(DWORD grfKeyState, POINTL pt, DWORD * pdwEffect)
 {
 	if(m_fAllowDrop) {
-		*pdwEffect = DropEffect(grfKeyState, pt, *pdwEffect);		
+		*pdwEffect = DropEffect(grfKeyState, pt, *pdwEffect);
 	} else {
 		*pdwEffect = DROPEFFECT_NONE;
 	}
