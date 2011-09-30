@@ -48,9 +48,12 @@ class ATL_NO_VTABLE CTouchInfo :
 	public ISupportErrorInfo
 {
 public:
-	CTouchInfo()
+	CTouchInfo() : _id(0), _flags(0), _time(0)
 	{
-		ZeroMemory(&_input, sizeof(GESTUREINFO));
+		_pt.x = 0;
+		_pt.y = 0;
+		_size.x = 0;
+		_size.y = 0;
 	}
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -75,10 +78,14 @@ BEGIN_COM_MAP(CTouchInfo)
 END_COM_MAP()
 
 	private:
-		TOUCHINPUT _input;
+		POINT    _pt;
+		int      _id;
+		int      _flags;
+		int      _time;
+		POINT    _size;
 
 	public:
-		void Init(TOUCHINPUT input) { _input = input; }
+		void Init(HWND hwnd, TOUCHINPUT input);
 
 		//////////////////////////////////////////////////////////////////////////
 		// ISupportErrorInfo

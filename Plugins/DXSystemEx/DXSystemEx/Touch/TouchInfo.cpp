@@ -32,6 +32,30 @@
 #include "stdafx.h"
 #include "TouchInfo.h"
 
+
+void CTouchInfo::Init(HWND hwnd, TOUCHINPUT input) {
+	// Coordinates
+	_pt.x = TOUCH_COORD_TO_PIXEL(input.x);
+	_pt.y = TOUCH_COORD_TO_PIXEL(input.y);
+	ScreenToClient(hwnd, &_pt);
+
+	_id = input.dwID;
+
+	_time = (input.dwMask & TOUCHINPUTMASKF_TIMEFROMSYSTEM) ? input.dwTime : -1;
+
+	_flags = input.dwFlags;
+
+	if (input.dwMask & TOUCHINPUTMASKF_CONTACTAREA) {
+		_size.x = input.cxContact;
+		_size.y = input.cyContact;
+
+		ScreenToClient(hwnd, &_size);
+	} else {
+		_size.x = -1;
+		_size.y = -1;
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ISupportErrorInfo
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,38 +80,31 @@ STDMETHODIMP CTouchInfo::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CTouchInfo::get_X(long* x)
 {
-	*x = _input.x;
-
+	*x = _pt.x;
 	return S_OK;
 }
 
 STDMETHODIMP CTouchInfo::get_Y(long* y)
 {
-	*y = _input.y;
-
+	*y = _pt.y;
 	return S_OK;
 }
 
 STDMETHODIMP CTouchInfo::get_Id(int* id)
 {
-	*id = _input.dwID;
-
+	*id = _id;
 	return S_OK;
 }
 
 STDMETHODIMP CTouchInfo::get_Time(int* time)
 {
-	if (_input.dwMask & TOUCHINPUTMASKF_TIMEFROMSYSTEM)
-		*time = _input.dwTime;
-	else
-		*time = -1;
-
+	*time = _time;
 	return S_OK;
 }
 
 STDMETHODIMP CTouchInfo::HasFlag(int flagId, VARIANT_BOOL* hasFlag)
 {
-	if (_input.dwFlags & flagId)
+	if (_flags & flagId)
 		*hasFlag = VARIANT_TRUE;
 	else
 		*hasFlag = VARIANT_FALSE;
@@ -97,20 +114,13 @@ STDMETHODIMP CTouchInfo::HasFlag(int flagId, VARIANT_BOOL* hasFlag)
 
 STDMETHODIMP CTouchInfo::get_Width(long* width)
 {
-	if (_input.dwMask & TOUCHINPUTMASKF_CONTACTAREA)
-		*width = _input.cxContact;
-	else
-		*width = -1;
+	*width = _size.x;
 
 	return S_OK;
 }
 
 STDMETHODIMP CTouchInfo::get_Height(long* height)
 {
-	if (_input.dwMask & TOUCHINPUTMASKF_CONTACTAREA)
-		*height = _input.cyContact;
-	else
-		*height = -1;
-
+	*height = _size.y;
 	return S_OK;
 }
