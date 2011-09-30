@@ -658,6 +658,10 @@ label_expiration:
 					if (!GetGestureInfo((HGESTUREINFO)msg->lParam, &info))
 						return FALSE;
 
+					// Skip GID_BEGIN and GID_END gestures
+					if (info.dwID == GID_BEGIN || info.dwID == GID_END)
+						return FALSE;
+
 					// Process gesture
 					CComObject<CGestureInfo>* pGestureInfo;
 					CComObject<CGestureInfo>::CreateInstance(&pGestureInfo);
